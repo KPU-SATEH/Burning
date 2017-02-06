@@ -50,7 +50,7 @@ namespace ContentProvider
             {
                 contentData = epub.Content[--count] as ContentData;
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch(ArgumentOutOfRangeException ex)
             {
                 MessageBox.Show("Its first page!");
                 count = 0;
@@ -63,7 +63,16 @@ namespace ContentProvider
         private void btnFrontShowDlg_Click(object sender, RoutedEventArgs e)
         {
             paraBodyText.Inlines.Clear();
-            contentData = epub.Content[++count] as ContentData;
+            try
+            {
+                contentData = epub.Content[++count] as ContentData;
+            }
+            catch(ArgumentOutOfRangeException ex)
+            {
+                MessageBox.Show("Its last page!");
+                count--;
+                contentData = epub.Content[count] as ContentData;
+            }
             Run str = new Run(contentData.GetContentAsPlainText());
             paraBodyText.Inlines.Add(str);
         }
