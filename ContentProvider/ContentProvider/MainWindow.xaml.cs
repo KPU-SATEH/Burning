@@ -79,12 +79,6 @@ namespace ContentProvider
             paraBodyText.Inlines.Add(str);
         }
 
-        private void btnFileOpen_Click(object sender, RoutedEventArgs e)
-        {
-            fileFullName = ShowFileOpenDialog();
-            epub = new Epub(fileFullName);
-        }
-
         public string ShowFileOpenDialog()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -100,6 +94,32 @@ namespace ContentProvider
                 return "";
             }
             return "";
+        }
+
+        private void menuNew_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void menuOpen_Click(object sender, RoutedEventArgs e)
+        {
+            fileFullName = ShowFileOpenDialog();
+            epub = new Epub(fileFullName);
+        }
+
+        private void menuSave_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void menuRedo_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void menuUndo_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

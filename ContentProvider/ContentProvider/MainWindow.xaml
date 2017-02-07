@@ -7,17 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1250" Width="1000">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="266*"/>
-            <ColumnDefinition Width="65*"/>
-        </Grid.ColumnDefinitions>
-        <Button x:Name="button_back" Content="Back" HorizontalAlignment="Left" Margin="20.6,27,0,0" VerticalAlignment="Top" Width="75" Click="btnBackShowDlg_Click" Grid.Column="1"/>
-        <Button x:Name="button_front" Content="Front" HorizontalAlignment="Left" Margin="100.6,27,0,0" VerticalAlignment="Top" Width="75" Click="btnFrontShowDlg_Click" Grid.Column="1"/>
+
+        <Menu Background="GhostWhite"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="1000">
+            <MenuItem Header="File">
+                <MenuItem Header="New (Ctrl+n)" HorizontalAlignment="Left" Click="menuNew_Click"/>
+                <MenuItem Header="Open (Ctrl+o)" HorizontalAlignment="Left" Click="menuOpen_Click"/>
+                <MenuItem Header="Save (Ctrl+s)" HorizontalAlignment="Left" Click="menuSave_Click"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Redo (Ctrl+z)" HorizontalAlignment="Left" Click="menuRedo_Click"/>
+                <MenuItem Header="Undo (Ctrl+y)" HorizontalAlignment="Left" Click="menuUndo_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <Button x:Name="button_back" Content="Back" HorizontalAlignment="Left" Margin="817,38,0,0" VerticalAlignment="Top" Width="75" Click="btnBackShowDlg_Click"/>
+        <Button x:Name="button_front" Content="Front" HorizontalAlignment="Left" Margin="897,38,0,0" VerticalAlignment="Top" Width="75" Click="btnFrontShowDlg_Click"/>
         <FlowDocumentReader x:Name="myDocumentReader" Height="1000" IsTwoPageViewEnabled="False" ViewingMode="Scroll" Grid.ColumnSpan="2" Margin="0,85,-0.4,85.4">
             <FlowDocument>
                 <Paragraph x:Name="paraBodyText"/>
             </FlowDocument>
         </FlowDocumentReader>
-        <Button x:Name="button" Content="file open" HorizontalAlignment="Left" Margin="76,32,0,0" VerticalAlignment="Top" Width="75" Click="btnFileOpen_Click"/>
     </Grid>
 </Window>
