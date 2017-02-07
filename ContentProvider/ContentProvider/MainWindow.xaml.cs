@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 using eBdb.EpubReader;
 using Ionic.Zip;
 
@@ -24,14 +25,15 @@ namespace ContentProvider
     {
         static int count = 0;
         Epub epub;
+        string fileFullName;
         //string title;
         //string plainText;
         //string htmlText;
         ContentData contentData;
-
+        
         public MainWindow()
         {
-            epub = new Epub(@"c:\Users\ljyok\Desktop\도쿠가와이에야스.epub");
+            //epub = new Epub(@"c:\Users\ljyok\Desktop\도쿠가와이에야스.epub");
             //title = epub.Title[0];
             //string author = epub.Creator[0];
             //plainText = epub.GetContentAsPlainText();
@@ -75,6 +77,29 @@ namespace ContentProvider
             }
             Run str = new Run(contentData.GetContentAsPlainText());
             paraBodyText.Inlines.Add(str);
+        }
+
+        private void btnFileOpen_Click(object sender, RoutedEventArgs e)
+        {
+            fileFullName = ShowFileOpenDialog();
+            epub = new Epub(fileFullName);
+        }
+
+        public string ShowFileOpenDialog()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "File open";
+            openFileDialog.Filter = "e- book (*.epub) | *.epub";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                return openFileDialog.FileName;
+            }
+            else if (openFileDialog.ShowDialog() == false)
+            {
+                return "";
+            }
+            return "";
         }
     }
 }
