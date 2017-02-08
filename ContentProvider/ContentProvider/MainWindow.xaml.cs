@@ -24,8 +24,8 @@ namespace ContentProvider
     public partial class MainWindow : Window
     {
         static int count = 0;
-        Epub epub;
-        string fileFullName;
+        Epub epub = null;
+        string fileFullName = null;
         //string title;
         //string plainText;
         //string htmlText;
@@ -42,6 +42,8 @@ namespace ContentProvider
             //plainText = contentData.GetContentAsPlainText();
             //List<NavPoint> navPoints = epub.TOC;
 
+            //button_back.IsEnabled = false;
+            //button_front.IsEnabled = false;
             InitializeComponent();
         }
 
@@ -87,13 +89,15 @@ namespace ContentProvider
 
             if (openFileDialog.ShowDialog() == true)
             {
+                //button_back.IsEnabled = true;
+                //button_front.IsEnabled = true;
                 return openFileDialog.FileName;
             }
             else if (openFileDialog.ShowDialog() == false)
             {
-                return "";
+                return null;
             }
-            return "";
+            return null;
         }
 
         private void menuNew_Click(object sender, RoutedEventArgs e)
@@ -104,7 +108,8 @@ namespace ContentProvider
         private void menuOpen_Click(object sender, RoutedEventArgs e)
         {
             fileFullName = ShowFileOpenDialog();
-            epub = new Epub(fileFullName);
+            if (fileFullName != null)
+                epub = new Epub(fileFullName);
         }
 
         private void menuSave_Click(object sender, RoutedEventArgs e)
