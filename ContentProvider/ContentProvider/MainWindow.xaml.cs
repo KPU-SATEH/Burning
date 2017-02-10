@@ -33,18 +33,10 @@ namespace ContentProvider
         
         public MainWindow()
         {
-            //epub = new Epub(@"c:\Users\ljyok\Desktop\도쿠가와이에야스.epub");
-            //title = epub.Title[0];
-            //string author = epub.Creator[0];
-            //plainText = epub.GetContentAsPlainText();
-            //htmlText = epub.GetContentAsHtml();
-            //contentData = epub.Content[0] as ContentData;
-            //plainText = contentData.GetContentAsPlainText();
-            //List<NavPoint> navPoints = epub.TOC;
-
-            //button_back.IsEnabled = false;
-            //button_front.IsEnabled = false;
             InitializeComponent();
+
+            button_back.IsEnabled = false;
+            button_front.IsEnabled = false;
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
@@ -89,14 +81,11 @@ namespace ContentProvider
 
             if (openFileDialog.ShowDialog() == true)
             {
-                //button_back.IsEnabled = true;
-                //button_front.IsEnabled = true;
+                button_back.IsEnabled = true;
+                button_front.IsEnabled = true;
                 return openFileDialog.FileName;
             }
-            else if (openFileDialog.ShowDialog() == false)
-            {
-                return null;
-            }
+
             return null;
         }
 
