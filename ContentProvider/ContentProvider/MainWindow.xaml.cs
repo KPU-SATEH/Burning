@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -69,6 +70,7 @@ namespace ContentProvider
                 count--;
                 contentData = epub.Content[count] as ContentData;
             }
+            
             Run str = new Run(contentData.GetContentAsPlainText());
             paraBodyText.Inlines.Add(str);
         }
@@ -77,16 +79,28 @@ namespace ContentProvider
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "File open";
-            openFileDialog.Filter = "e- book (*.epub) | *.epub";
+            openFileDialog.Filter = "e-book (*.epub) | *.epub";
 
-            if (openFileDialog.ShowDialog() == true)
+            if(openFileDialog.ShowDialog() == true)
             {
                 button_back.IsEnabled = true;
                 button_front.IsEnabled = true;
+
                 return openFileDialog.FileName;
             }
 
             return null;
+        }
+
+        public void ShowFileSaveDialog()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "e-book (*.epub) | *.epub";
+
+            if(saveFileDialog.ShowDialog() == true)
+            {
+                File.WriteAllBytes(saveFileDialog.FileName);
+            }
         }
 
         private void menuNew_Click(object sender, RoutedEventArgs e)
@@ -94,6 +108,15 @@ namespace ContentProvider
 
         }
 
+        // file -> open shortcut(ctrl+o)
+        private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            fileFullName = ShowFileOpenDialog();
+            if (fileFullName != null)
+                epub = new Epub(fileFullName);
+        }
+
+        // file -> open click
         private void menuOpen_Click(object sender, RoutedEventArgs e)
         {
             fileFullName = ShowFileOpenDialog();

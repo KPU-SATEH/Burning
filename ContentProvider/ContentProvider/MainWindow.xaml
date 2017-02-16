@@ -6,17 +6,23 @@
         xmlns:local="clr-namespace:ContentProvider"
         mc:Ignorable="d"
         Title="MainWindow" Height="1250" Width="1000">
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"></CommandBinding>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Ctrl" Key="O" Command="Open"></KeyBinding>
+    </Window.InputBindings>
+    
     <Grid>
-
         <Menu Background="GhostWhite"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="1000">
             <MenuItem Header="File">
-                <MenuItem Header="New (Ctrl+n)" HorizontalAlignment="Left" Click="menuNew_Click"/>
-                <MenuItem Header="Open (Ctrl+o)" HorizontalAlignment="Left" Click="menuOpen_Click"/>
-                <MenuItem Header="Save (Ctrl+s)" HorizontalAlignment="Left" Click="menuSave_Click"/>
+                <MenuItem Header="New " HorizontalAlignment="Left" Click="menuNew_Click" InputGestureText="Ctrl+n"/>
+                <MenuItem Header="Open" HorizontalAlignment="Left" Click="menuOpen_Click" InputGestureText="Ctrl+o"/>
+                <MenuItem Header="Save " HorizontalAlignment="Left" Click="menuSave_Click" InputGestureText="Ctrl+s"/>
             </MenuItem>
             <MenuItem Header="Edit">
-                <MenuItem Header="Redo (Ctrl+z)" HorizontalAlignment="Left" Click="menuRedo_Click"/>
-                <MenuItem Header="Undo (Ctrl+y)" HorizontalAlignment="Left" Click="menuUndo_Click"/>
+                <MenuItem Header="Redo" HorizontalAlignment="Left" Click="menuRedo_Click" InputGestureText="Ctrl+z"/>
+                <MenuItem Header="Undo" HorizontalAlignment="Left" Click="menuUndo_Click" InputGestureText="Ctrl+y"/>
             </MenuItem>
         </Menu>
 
