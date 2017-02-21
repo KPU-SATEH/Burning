@@ -35,11 +35,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="eBdb.EpubReader">
-      <HintPath>..\..\..\..\..\Downloads\epubReader-v.1.0.0.6\epubReader-v.1.0.0.6\eBdb.EpubReader.dll</HintPath>
+    <Reference Include="eBdb.EpubReader, Version=1.0.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Documents\Visual Studio 2015\Projects\eBdb.EpubReader\eBdb.EpubReader\bin\Release\eBdb.EpubReader.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\..\..\..\..\Downloads\epubReader-v.1.0.0.6\epubReader-v.1.0.0.6\Ionic.Zip.dll</HintPath>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Documents\Visual Studio 2015\Projects\eBdb.EpubReader\eBdb.EpubReader\bin\Release\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

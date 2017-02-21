@@ -5,16 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ContentProvider"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1250" Width="1000">
+        Title="MainWindow" Height="1250" Width="1500" MinHeight="1250" MinWidth="1500">
     <Window.CommandBindings>
+        <CommandBinding Command="New" Executed="NewCommandBinding_Executed"></CommandBinding>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"></CommandBinding>
+        <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed"></CommandBinding>
     </Window.CommandBindings>
     <Window.InputBindings>
+        <KeyBinding Modifiers="Ctrl" Key="N" Command="New"></KeyBinding>
         <KeyBinding Modifiers="Ctrl" Key="O" Command="Open"></KeyBinding>
+        <KeyBinding Modifiers="Ctrl" Key="S" Command="Save"></KeyBinding>
     </Window.InputBindings>
-    
+
     <Grid>
-        <Menu Background="GhostWhite"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="1000">
+        <Menu Background="GhostWhite"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="1500">
             <MenuItem Header="File">
                 <MenuItem Header="New " HorizontalAlignment="Left" Click="menuNew_Click" InputGestureText="Ctrl+n"/>
                 <MenuItem Header="Open" HorizontalAlignment="Left" Click="menuOpen_Click" InputGestureText="Ctrl+o"/>
@@ -26,12 +30,36 @@
             </MenuItem>
         </Menu>
 
-        <Button x:Name="button_back" Content="Back" HorizontalAlignment="Left" Margin="817,38,0,0" VerticalAlignment="Top" Width="75" Click="btnBackShowDlg_Click"/>
-        <Button x:Name="button_front" Content="Front" HorizontalAlignment="Left" Margin="897,38,0,0" VerticalAlignment="Top" Width="75" Click="btnFrontShowDlg_Click"/>
-        <FlowDocumentReader x:Name="myDocumentReader" Height="1000" IsTwoPageViewEnabled="False" ViewingMode="Scroll" Grid.ColumnSpan="2" Margin="0,85,-0.4,85.4">
-            <FlowDocument>
-                <Paragraph x:Name="paraBodyText"/>
-            </FlowDocument>
-        </FlowDocumentReader>
+        <Grid Margin="0,18,-0.4,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="180*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="10*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="button_back" Content="Back" Grid.Row="1" Grid.Column="8" Width="60" Click="btnBackShowDlg_Click"/>
+            <Button x:Name="button_front" Content="Front" Grid.Row="1" Grid.Column="9" Width="60" Click="btnFrontShowDlg_Click"/>
+
+            <FlowDocumentReader x:Name="myDocumentReader" Grid.Row="3" Grid.ColumnSpan="10" IsTwoPageViewEnabled="False" ViewingMode="Scroll">
+                <FlowDocument>
+                    <Paragraph x:Name="paraBodyText"/>
+                </FlowDocument>
+            </FlowDocumentReader>
+        </Grid>
     </Grid>
 </Window>

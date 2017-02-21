@@ -31,13 +31,42 @@ namespace ContentProvider
         //string plainText;
         //string htmlText;
         ContentData contentData;
+        double originalWidth, originalHeight;
+        ScaleTransform scale = new ScaleTransform();
         
         public MainWindow()
         {
             InitializeComponent();
 
+            this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
+            
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
+        }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChangeSize(e.NewSize.Width, e.NewSize.Height);
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            originalWidth = this.Width;
+            originalHeight = this.Height;
+
+            if (this.WindowState == WindowState.Maximized)
+            {
+                ChangeSize(this.ActualWidth, this.ActualHeight);
+            }
+
+            this.SizeChanged += new SizeChangedEventHandler(MainWindow_SizeChanged);
+        }
+
+        private void ChangeSize(double width, double height)
+        {
+            myDocumentReader.Width = width / 2;
+            scale.ScaleX = width / originalWidth;
+            scale.ScaleY = height / originalHeight;
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
@@ -99,13 +128,30 @@ namespace ContentProvider
 
             if(saveFileDialog.ShowDialog() == true)
             {
-                File.WriteAllBytes(saveFileDialog.FileName);
+                //File.WriteAllBytes(saveFileDialog.FileName);
+                MessageBox.Show(saveFileDialog.FileName);
             }
         }
 
+        private void NewCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            epub = null;
+
+            paraBodyText.Inlines.Clear();
+
+            button_back.IsEnabled = false;
+            button_front.IsEnabled = false;
+        }
+
+        // file -> new click
         private void menuNew_Click(object sender, RoutedEventArgs e)
         {
+            epub = null;
 
+            paraBodyText.Inlines.Clear();
+
+            button_back.IsEnabled = false;
+            button_front.IsEnabled = false;
         }
 
         // file -> open shortcut(ctrl+o)
@@ -124,9 +170,16 @@ namespace ContentProvider
                 epub = new Epub(fileFullName);
         }
 
+        // file -> save shortcut(ctrl+s)
+        private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ShowFileSaveDialog();
+        }
+
+        // file -> save click
         private void menuSave_Click(object sender, RoutedEventArgs e)
         {
-
+            ShowFileOpenDialog();
         }
 
         private void menuRedo_Click(object sender, RoutedEventArgs e)
