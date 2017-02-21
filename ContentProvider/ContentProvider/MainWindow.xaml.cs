@@ -32,11 +32,14 @@ namespace ContentProvider
         //string htmlText;
         ContentData contentData;
         double originalWidth, originalHeight;
-        ScaleTransform scale = new ScaleTransform();
-        
+        string eraserToUse = null;
+
+
         public MainWindow()
         {
             InitializeComponent();
+
+            this.myInkCanvas.EditingMode = InkCanvasEditingMode.Ink;
 
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
             
@@ -65,8 +68,6 @@ namespace ContentProvider
         private void ChangeSize(double width, double height)
         {
             myDocumentReader.Width = width / 2;
-            scale.ScaleX = width / originalWidth;
-            scale.ScaleY = height / originalHeight;
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
@@ -190,6 +191,48 @@ namespace ContentProvider
         private void menuUndo_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void btnPencil_Click(object sender, RoutedEventArgs e)
+        {
+            this.myInkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+        }
+
+        private void btnEraser_Click(object sender, RoutedEventArgs e)
+        {
+            switch(eraserToUse)
+            {
+                case "Stroke Eraser":
+                    this.myInkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
+                    break;
+
+                case "Point Eraser":
+                    this.myInkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+                    break;
+            }
+        }
+
+        private void eraser_Choice(object sender, RoutedEventArgs e)
+        {
+            var button = sender as RadioButton;
+
+            eraserToUse = button.Content.ToString();
+
+            switch (eraserToUse)
+            {
+                case "Stroke Eraser":
+                    this.myInkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
+                    break;
+
+                case "Point Eraser":
+                    this.myInkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+                    break;
+            }
+        }
+
+        private void btnChoice_Click(object sender, RoutedEventArgs e)
+        {
+            this.myInkCanvas.EditingMode = InkCanvasEditingMode.Select;
         }
     }
 }

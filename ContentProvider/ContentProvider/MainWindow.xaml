@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ContentProvider"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1250" Width="1500" MinHeight="1250" MinWidth="1500">
+        Title="MainWindow" Height="750" Width="1500" MinHeight="750" MinWidth="1500">
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewCommandBinding_Executed"></CommandBinding>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"></CommandBinding>
@@ -35,8 +35,9 @@
                 <RowDefinition Height="5*"/>
                 <RowDefinition Height="5*"/>
                 <RowDefinition Height="5*"/>
-                <RowDefinition Height="180*"/>
-                <RowDefinition Height="5*"/>
+                <RowDefinition Height="170*"/>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="8*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -49,17 +50,39 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                
             </Grid.ColumnDefinitions>
 
             <Button x:Name="button_back" Content="Back" Grid.Row="1" Grid.Column="8" Width="60" Click="btnBackShowDlg_Click"/>
             <Button x:Name="button_front" Content="Front" Grid.Row="1" Grid.Column="9" Width="60" Click="btnFrontShowDlg_Click"/>
 
-            <FlowDocumentReader x:Name="myDocumentReader" Grid.Row="3" Grid.ColumnSpan="10" IsTwoPageViewEnabled="False" ViewingMode="Scroll">
+            <FlowDocumentReader x:Name="myDocumentReader" Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="10" IsTwoPageViewEnabled="False" ViewingMode="Scroll">
                 <FlowDocument>
                     <Paragraph x:Name="paraBodyText"/>
                 </FlowDocument>
             </FlowDocumentReader>
+
+            <InkCanvas x:Name="myInkCanvas" Grid.Row="3" Grid.Column="10" Grid.ColumnSpan="10"/>
+            <Button x:Name="Pencil" Content="Pencil" Grid.Row="4" Grid.Column="17" Width="60" Click="btnPencil_Click" VerticalAlignment="Center" />
+            <Button x:Name="Eraser" Content="Eraser" Grid.Row="4" Grid.Column="18" Width="60" Click="btnEraser_Click" VerticalAlignment="Center">
+                <Button.ContextMenu>
+                    <ContextMenu x:Name="eraserChoice">
+                        <RadioButton x:Name="Point" Content="Point Eraser" IsChecked="True"  Checked="eraser_Choice"/>
+                        <RadioButton x:Name="Stroke" Content="Stroke Eraser" Checked="eraser_Choice"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button x:Name="Choice" Content="Choice" Grid.Row="4" Grid.Column="19" Width="60" Click="btnChoice_Click" VerticalAlignment="Center"/>
         </Grid>
     </Grid>
 </Window>
