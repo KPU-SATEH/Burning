@@ -139,6 +139,7 @@ namespace ContentProvider
             epub = null;
 
             paraBodyText.Inlines.Clear();
+            myInkCanvas.Strokes.Clear();
 
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
@@ -150,6 +151,7 @@ namespace ContentProvider
             epub = null;
 
             paraBodyText.Inlines.Clear();
+            myInkCanvas.Strokes.Clear();
 
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
