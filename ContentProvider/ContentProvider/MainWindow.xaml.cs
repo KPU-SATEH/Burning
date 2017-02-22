@@ -31,15 +31,17 @@ namespace ContentProvider
         //string plainText;
         //string htmlText;
         ContentData contentData;
-        double originalWidth, originalHeight;
+        System.Windows.Ink.StrokeCollection added;
+        System.Windows.Ink.StrokeCollection removed;
+        private bool handle = true;
         string eraserToUse = null;
-
 
         public MainWindow()
         {
             InitializeComponent();
 
             this.myInkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            myInkCanvas.Strokes.StrokesChanged += Strokes_Changed;
             
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
@@ -160,14 +162,49 @@ namespace ContentProvider
             ShowFileOpenDialog();
         }
 
-        private void menuRedo_Click(object sender, RoutedEventArgs e)
+        private void Strokes_Changed(object sender, System.Windows.Ink.StrokeCollectionChangedEventArgs e)
         {
-
+            if (handle)
+            {
+                added = e.Added;
+                removed = e.Removed;
+            }
         }
 
+        // edit -> redo shortcut(ctrl+z)
+        private void RedoCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            handle = false;
+            myInkCanvas.Strokes.Remove(added);
+            //myInkCanvas.Strokes.Add(removed);
+            handle = true;
+        }
+
+        // edit -> redo click
+        private void menuRedo_Click(object sender, RoutedEventArgs e)
+        {
+            handle = false;
+            //myInkCanvas.Strokes.Remove(added);
+            myInkCanvas.Strokes.Add(removed);
+            handle = true;
+        }
+
+        // edit -> undo shortcut(ctrl+y)
+        private void UndoCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            handle = false;
+            myInkCanvas.Strokes.Add(added);
+            myInkCanvas.Strokes.Remove(removed);
+            handle = true;
+        }
+
+        // edit -> undo click
         private void menuUndo_Click(object sender, RoutedEventArgs e)
         {
-
+            handle = false;
+            myInkCanvas.Strokes.Add(added);
+            myInkCanvas.Strokes.Remove(removed);
+            handle = true;
         }
 
         private void btnPencil_Click(object sender, RoutedEventArgs e)

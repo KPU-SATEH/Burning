@@ -10,11 +10,15 @@
         <CommandBinding Command="New" Executed="NewCommandBinding_Executed"></CommandBinding>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"></CommandBinding>
         <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed"></CommandBinding>
+        <CommandBinding Command="Redo" Executed="RedoCommandBinding_Executed"></CommandBinding>
+        <CommandBinding Command="Undo" Executed="UndoCommandBinding_Executed"></CommandBinding>
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Modifiers="Ctrl" Key="N" Command="New"></KeyBinding>
         <KeyBinding Modifiers="Ctrl" Key="O" Command="Open"></KeyBinding>
         <KeyBinding Modifiers="Ctrl" Key="S" Command="Save"></KeyBinding>
+        <KeyBinding Modifiers="Ctrl" Key="Z" Command="Redo"></KeyBinding>
+        <KeyBinding Modifiers="Ctrl" Key="Y" Command="Undo"></KeyBinding>
     </Window.InputBindings>
 
     <Grid>
