@@ -40,34 +40,9 @@ namespace ContentProvider
             InitializeComponent();
 
             this.myInkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-
-            this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
             
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
-        }
-
-        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            ChangeSize(e.NewSize.Width, e.NewSize.Height);
-        }
-
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            originalWidth = this.Width;
-            originalHeight = this.Height;
-
-            if (this.WindowState == WindowState.Maximized)
-            {
-                ChangeSize(this.ActualWidth, this.ActualHeight);
-            }
-
-            this.SizeChanged += new SizeChangedEventHandler(MainWindow_SizeChanged);
-        }
-
-        private void ChangeSize(double width, double height)
-        {
-            myDocumentReader.Width = width / 2;
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
