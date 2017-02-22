@@ -31,8 +31,10 @@ namespace ContentProvider
         //string plainText;
         //string htmlText;
         ContentData contentData;
-        System.Windows.Ink.StrokeCollection added;
-        System.Windows.Ink.StrokeCollection removed;
+        System.Collections.Stack addedRedo = new System.Collections.Stack();
+        System.Collections.Stack removedRedo= new System.Collections.Stack();
+        System.Collections.Stack addedUndo = new System.Collections.Stack();
+        System.Collections.Stack removedUndo = new System.Collections.Stack();
         private bool handle = true;
         string eraserToUse = null;
 
@@ -166,8 +168,8 @@ namespace ContentProvider
         {
             if (handle)
             {
-                added = e.Added;
-                removed = e.Removed;
+                addedRedo.Push((System.Windows.Ink.StrokeCollection)e.Added);
+                removedRedo.Push((System.Windows.Ink.StrokeCollection)e.Removed);
             }
         }
 
@@ -175,8 +177,16 @@ namespace ContentProvider
         private void RedoCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             handle = false;
-            myInkCanvas.Strokes.Remove(added);
-            //myInkCanvas.Strokes.Add(removed);
+            if (addedRedo.Count > 0)
+            {
+                myInkCanvas.Strokes.Remove((System.Windows.Ink.StrokeCollection)addedRedo.Peek());
+                addedUndo.Push(addedRedo.Pop());
+            }
+            if (removedRedo.Count > 0)
+            {
+                myInkCanvas.Strokes.Add((System.Windows.Ink.StrokeCollection)removedRedo.Peek());
+                removedUndo.Push(removedRedo.Pop());
+            }
             handle = true;
         }
 
@@ -184,8 +194,16 @@ namespace ContentProvider
         private void menuRedo_Click(object sender, RoutedEventArgs e)
         {
             handle = false;
-            //myInkCanvas.Strokes.Remove(added);
-            myInkCanvas.Strokes.Add(removed);
+            if (addedRedo.Count > 0)
+            {
+                myInkCanvas.Strokes.Remove((System.Windows.Ink.StrokeCollection)addedRedo.Peek());
+                addedUndo.Push(addedRedo.Pop());
+            }
+            if (removedRedo.Count > 0)
+            {
+                myInkCanvas.Strokes.Add((System.Windows.Ink.StrokeCollection)removedRedo.Peek());
+                removedUndo.Push(removedRedo.Pop());
+            }
             handle = true;
         }
 
@@ -193,8 +211,16 @@ namespace ContentProvider
         private void UndoCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             handle = false;
-            myInkCanvas.Strokes.Add(added);
-            myInkCanvas.Strokes.Remove(removed);
+            if (addedUndo.Count > 0)
+            {
+                myInkCanvas.Strokes.Add((System.Windows.Ink.StrokeCollection)addedUndo.Peek());
+                addedRedo.Push(addedUndo.Pop());
+            }
+            if (removedUndo.Count > 0)
+            {
+                myInkCanvas.Strokes.Remove((System.Windows.Ink.StrokeCollection)removedUndo.Peek());
+                removedRedo.Push(removedUndo.Pop());
+            }
             handle = true;
         }
 
@@ -202,8 +228,16 @@ namespace ContentProvider
         private void menuUndo_Click(object sender, RoutedEventArgs e)
         {
             handle = false;
-            myInkCanvas.Strokes.Add(added);
-            myInkCanvas.Strokes.Remove(removed);
+            if (addedUndo.Count > 0)
+            {
+                myInkCanvas.Strokes.Add((System.Windows.Ink.StrokeCollection)addedUndo.Peek());
+                addedRedo.Push(addedUndo.Pop());
+            }
+            if (removedUndo.Count > 0)
+            {
+                myInkCanvas.Strokes.Remove((System.Windows.Ink.StrokeCollection)removedUndo.Peek());
+                removedRedo.Push(removedUndo.Pop());
+            }
             handle = true;
         }
 
