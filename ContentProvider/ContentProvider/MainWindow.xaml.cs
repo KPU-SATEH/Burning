@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Drawing;
+using System.Net;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -101,16 +103,27 @@ namespace ContentProvider
             return null;
         }
 
-        public void ShowFileSaveDialog()
+        public string ShowFileSaveDialog()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "e-book (*.epub) | *.epub";
+            saveFileDialog.Filter = "e-book (*.bmp) | *.bmp";
 
             if(saveFileDialog.ShowDialog() == true)
             {
                 //File.WriteAllBytes(saveFileDialog.FileName);
-                MessageBox.Show(saveFileDialog.FileName);
+                //MessageBox.Show(saveFileDialog.FileName);
+                return saveFileDialog.FileName;
             }
+
+            return null;
+        }
+
+        public System.Drawing.Image ByteArrayToImage(byte[] b)
+        {
+            ImageConverter imgcvt = new ImageConverter();
+            System.Drawing.Image img = (System.Drawing.Image)imgcvt.ConvertFrom(b);
+
+            return img;
         }
 
         private void NewCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -155,13 +168,52 @@ namespace ContentProvider
         // file -> save shortcut(ctrl+s)
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            ShowFileSaveDialog();
+            System.Drawing.Image img;
+            string saveFileName = ShowFileSaveDialog();
+
+            if (saveFileName != null)
+            {
+                img = ByteArrayToImage(CanvasToBitmapBytes());
+                img.Save(saveFileName, System.Drawing.Imaging.ImageFormat.Bmp);
+                img.Dispose();
+            }
+        }
+
+        private byte[] CanvasToBitmapBytes()
+        {
+            int margin = (int)this.myInkCanvas.Margin.Left;
+            int width = (int)this.myInkCanvas.ActualWidth - margin;
+            int height = (int)this.myInkCanvas.ActualHeight - margin;
+            byte[] bitmapBytes;
+
+            RenderTargetBitmap rtb = new RenderTargetBitmap(width, height, 96d, 96d, PixelFormats.Default);
+            rtb.Render(myInkCanvas);
+
+            BmpBitmapEncoder encoder = new BmpBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                encoder.Save(ms);
+                ms.Position = 0;
+                bitmapBytes = ms.ToArray();
+            }
+
+            return bitmapBytes;
         }
 
         // file -> save click
         private void menuSave_Click(object sender, RoutedEventArgs e)
         {
-            ShowFileOpenDialog();
+            System.Drawing.Image img;
+            string saveFileName = ShowFileSaveDialog();
+
+            if (saveFileName != null)
+            {
+                img = ByteArrayToImage(CanvasToBitmapBytes());
+                img.Save(saveFileName, System.Drawing.Imaging.ImageFormat.Bmp);
+                img.Dispose();
+            }
         }
 
         private void Strokes_Changed(object sender, System.Windows.Ink.StrokeCollectionChangedEventArgs e)
