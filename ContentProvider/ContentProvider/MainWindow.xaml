@@ -76,8 +76,8 @@
                 </FlowDocument>
             </FlowDocumentReader>
 
-            <StackPanel Grid.Row="3" Grid.Column="10" Grid.ColumnSpan="10">
-                <InkCanvas x:Name="myInkCanvas"/>
+            <StackPanel x:Name="myStackPanel" Grid.Row="3" Grid.Column="10" Grid.ColumnSpan="10">
+                <InkCanvas x:Name="myInkCanvas" Height="{Binding ElementName=myStackPanel, Path=ActualHeight}" />
             </StackPanel>
             <Button x:Name="Pencil" Content="Pencil" Grid.Row="4" Grid.Column="17" Width="60" Click="btnPencil_Click" VerticalAlignment="Center" />
             <Button x:Name="Eraser" Content="Eraser" Grid.Row="4" Grid.Column="18" Width="60" Click="btnEraser_Click" VerticalAlignment="Center">
