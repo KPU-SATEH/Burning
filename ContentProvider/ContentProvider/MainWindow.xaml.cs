@@ -126,6 +126,14 @@ namespace ContentProvider
             return img;
         }
 
+        public byte[] ImageToByteArray(System.Drawing.Image img)
+        {
+            MemoryStream ms = new MemoryStream();
+            img.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+
+            return ms.ToArray();
+        }
+
         private void NewCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             epub = null;
