@@ -1,87 +1,62 @@
-package com.example.hyejin.burning_stt;
+package com.example.hyejin.burning_ebook;
 
-import android.content.Intent;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
+import android.app.Activity;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.util.Log;
 
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
-    Intent i;
-    SpeechRecognizer mRecognizer;
-    TextView tv;
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.TOCReference;
+import nl.siegmann.epublib.epub.EpubReader;
+
+
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AssetManager assetManager = getAssets();
+        try {
+            InputStream epubInputStream = assetManager.open("books/christmas_carol_parallel_2.epub");
+            Book book = (new EpubReader()).readEpub(epubInputStream);
 
-        i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+            // Log the book's authors
+            Log.i("epublib", "author(s): " + book.getMetadata().getAuthors());
 
-        mRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        mRecognizer.setRecognitionListener(listener);
-        mRecognizer.startListening(i);
+            // Log the book's title
+            Log.i("epublib", "title: " + book.getTitle());
 
-        tv = (TextView)findViewById(R.id.textView);
+            Bitmap coverImage = BitmapFactory.decodeStream(book.getCoverImage().getInputStream());
+            Log.i("epublib", "Coverimage is " + coverImage.getWidth() + " by "
+                    + coverImage.getHeight() + " pixels");
+
+            logTableOfContents(book.getTableOfContents().getTocReferences(), 0);
+        } catch (IOException e) {
+            Log.e("epublib", e.getMessage());
+        }
     }
 
-    private RecognitionListener listener = new RecognitionListener() {
-        @Override
-        public void onReadyForSpeech(Bundle params) {
-
+    private void logTableOfContents(List<TOCReference> tocReferences, int depth) {
+        if (tocReferences == null) {
+            return;
         }
-
-        @Override
-        public void onBeginningOfSpeech() {
-
+        for (TOCReference tocReference : tocReferences) {
+            StringBuilder tocString = new StringBuilder();
+            for (int i = 0; i < depth; i++) {
+                tocString.append("\t");
+            }
+            tocString.append(tocReference.getTitle());
+            logTableOfContents(tocReference.getChildren(), depth + 1);
         }
-
-        @Override
-        public void onRmsChanged(float rmsdB) {
-
-        }
-
-        @Override
-        public void onBufferReceived(byte[] buffer) {
-
-        }
-
-        @Override
-        public void onEndOfSpeech() {
-
-        }
-
-        @Override
-        public void onError(int error) {
-
-        }
-
-        @Override
-        public void onResults(Bundle results) {
-            String key;
-            key = SpeechRecognizer.RESULTS_RECOGNITION;
-            ArrayList<String> mResult = results.getStringArrayList(key);
-            String[] rs = new String[mResult.size()];
-            mResult.toArray(rs);
-            tv.setText("" + rs[0]);
-
-        }
-
-        @Override
-        public void onPartialResults(Bundle partialResults) {
-
-        }
-
-        @Override
-        public void onEvent(int eventType, Bundle params) {
-
-        }
-    };
-
+    }
 }
