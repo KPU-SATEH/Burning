@@ -10,7 +10,7 @@ import android.os.Parcelable;
 // EPUB 하나에 대한 정보
 // implements Parcelable을 한 이유 : 액티비티 간에 정보를 전달하기 위함
 public class EpubDatas implements Parcelable {
-    private String epub;
+    private String epub = "";
 
     // 생성자
     public EpubDatas(String epub) {
@@ -26,7 +26,7 @@ public class EpubDatas implements Parcelable {
     public String getEpub() {
         return epub;
     }
-    public void setEpub() {
+    public void setEpub(String epub) {
         this.epub = epub;
     }
     // ????????????????
