@@ -12,30 +12,28 @@ import java.net.URL;
  * Created by namju on 2017-03-24.
  */
 
-// XMLPullParser를 이용!
 abstract public class XMLParser {
-    private String mAddr;
+    private String mAddr = "";
 
-    // 생성자
     public XMLParser(String addr) {
         mAddr = addr;
     }
 
     // 메소드 : URL을 이용해서 XmlPullParser객체를 반환
+    XmlPullParser parser;
     public XmlPullParser getXMLParser(String type) {
         try {
             URL targetURL = new URL(mAddr);
             InputStream is = targetURL.openStream();
 
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            XmlPullParser parser = factory.newPullParser();
+            parser = factory.newPullParser();
 
             parser.setInput(is, type);
-
             return parser;
         } catch (Exception e) {
             Log.d("XMLParser", e.getMessage());
-            return null;
+            return parser; // null
         }
     }
     abstract void startParsing();
