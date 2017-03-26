@@ -1,64 +1,67 @@
-package com.example.namju.njhj;
+package com.example.hyejin.njhj;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Main2Activity extends AppCompatActivity {
+
+public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnInitListener {
+
     long mStartTime, mEndTime;
     EpubXMLParser mXMLParser;
 
-    Button aBtn;
-    Button bBtn;
-    Button cBtn;
+    private TextToSpeech mTTS;
+    static List<File> epubs;
+    ArrayAdapter<String> adapter;
+    ArrayList<String> list;
+    static File selected;
+    ListView listview;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        aBtn = (Button) findViewById(R.id.aBtn);
-        bBtn = (Button) findViewById(R.id.bBtn);
-        cBtn = (Button) findViewById(R.id.cBtn);
+        mTTS = new TextToSpeech(getApplicationContext(), this);
 
-        aBtn.setOnClickListener(new View.OnClickListener() {
+
+        listview = (ListView)findViewById(R.id.booklist);
+        list = new ArrayList<>();
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
+
+        listview.setAdapter(adapter);
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
-                intent.putExtra("epubBook", aBtn.getText().toString());
-                startActivity(intent);
-            }
-        });
-        bBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
-                intent.putExtra("epubBook", bBtn.getText().toString());
-                startActivity(intent);
-            }
-        });
-        cBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
-                intent.putExtra("epubBook", cBtn.getText().toString());
-                startActivity(intent);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selected = epubs.get(position);
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("bpath", selected.getAbsolutePath());
+                setResult(Activity.RESULT_OK, resultIntent);
+
             }
         });
 
-                mStartTime = System.currentTimeMillis();
-                mXMLParser = new EpubXMLParser("http://computer.kevincrack.com/epub_download.jsp", mHandler);
-                Thread thread = new Thread(mXMLParser);
-                thread.start();
-
+        mStartTime = System.currentTimeMillis();
+        mXMLParser = new EpubXMLParser("http://computer.kevincrack.com/epub_download.jsp", mHandler);
+        Thread thread = new Thread(mXMLParser);
+        thread.start();
     }
+
 
     Handler mHandler = new Handler() {
         @Override
@@ -71,10 +74,13 @@ public class Main2Activity extends AppCompatActivity {
             Log.d("Data List Size", Integer.toString(dataListSize));
             for (int i=0; i<dataListSize; i++) {
                 Log.d("XML Parsing Result", dataList.get(i).getEpub());
+                list.add(dataList.get(i).getEpub());         //서버에서 불러온 전자책 제목을 리스트로 보여줌
             }
-            //aBtn.setText(dataList.get(0).getEpub());
-            //bBtn.setText(dataList.get(1).getEpub());
-            //cBtn.setText(dataList.get(2).getEpub());
         }
     };
+
+    public void onInit(int i){
+        mTTS.speak("전자책 목록 화면입니다. 원하는 전자책을 선택해주세요.", TextToSpeech.QUEUE_FLUSH, null);
+    }
+
 }

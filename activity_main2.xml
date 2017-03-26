@@ -8,32 +8,29 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.namju.njhj.Main2Activity">
+    tools:context="com.example.hyejin.njhj.Main2Activity">
 
     <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:id="@+id/epubContents"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="전자책 목록"
+        android:textStyle="bold"
         android:textSize="30dp"
-        android:textStyle="bold"/>
+        android:text="전자책 목록"
+        android:gravity="center"/>
     <Button
-        android:id="@+id/aBtn"
-        android:layout_below="@id/epubContents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1. AAA"/>
-    <Button
-        android:id="@+id/bBtn"
-        android:layout_below="@id/aBtn"
-        android:layout_width="wrap_content"
+        android:text="책 목록 갱신"
+        android:id="@+id/refreshlist"
+        android:layout_alignRight="@id/epubContents"
+        android:layout_alignParentRight="true"/>
+
+    <ListView
+        android:id="@+id/booklist"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="2. BBB"/>
-    <Button
-        android:id="@+id/cBtn"
-        android:layout_below="@id/bBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="3. CCC"/>
+        android:layout_below="@id/epubContents">
+    </ListView>
+
 </RelativeLayout>
