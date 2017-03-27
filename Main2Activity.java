@@ -48,10 +48,14 @@ public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnI
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selected = epubs.get(position);
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("bpath", selected.getAbsolutePath());
-                setResult(Activity.RESULT_OK, resultIntent);
+                //selected = epubs.get(position);
+                //Intent resultIntent = new Intent();
+                //resultIntent.putExtra("bpath", selected.getAbsolutePath());
+                //setResult(Activity.RESULT_OK, resultIntent);
+
+                Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
+                intent.putExtra("value", list.get(position));
+                startActivity(intent);
 
             }
         });
