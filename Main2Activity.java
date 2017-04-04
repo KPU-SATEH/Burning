@@ -1,23 +1,24 @@
 package com.example.hyejin.njhj;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnInitListener {
+
+public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnInitListener{
 
     long mStartTime, mEndTime;
     EpubXMLParser mXMLParser;
@@ -28,8 +29,8 @@ public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnI
     ArrayList<String> list;
     static File selected;
     ListView listview;
-
-
+    private DoubleTap doubleTap;
+    int position_n = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnI
         mTTS = new TextToSpeech(getApplicationContext(), this);
 
 
+        doubleTap = (DoubleTap) findViewById(R.id.booklist);
         listview = (ListView)findViewById(R.id.booklist);
         list = new ArrayList<>();
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
@@ -48,15 +50,32 @@ public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnI
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 //selected = epubs.get(position);
                 //Intent resultIntent = new Intent();
                 //resultIntent.putExtra("bpath", selected.getAbsolutePath());
                 //setResult(Activity.RESULT_OK, resultIntent);
 
-                Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
-                intent.putExtra("value", list.get(position));
-                startActivity(intent);
 
+                //intent.putExtra("value", list.get(position));
+                String sld = list.get(position);
+                position_n = position;
+
+                mTTS.speak(sld,TextToSpeech.QUEUE_FLUSH, null);
+                Log.d("TEST","oneone");
+
+
+            }
+        });
+
+        doubleTap.setOnDoubleClickListener(new DoubleTap.OnDoubleClickListener() {
+            @Override
+            public void onDoubleClick(View view) {
+                Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
+                intent.putExtra("BOOKNAME", list.get(position_n));
+                Log.d("GETLIST", list.get(position_n));
+                startActivity(intent);
+                Log.d("TEST","hello");
             }
         });
 
@@ -65,6 +84,8 @@ public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnI
         Thread thread = new Thread(mXMLParser);
         thread.start();
     }
+
+
 
 
     Handler mHandler = new Handler() {

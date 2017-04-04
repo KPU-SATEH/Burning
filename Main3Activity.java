@@ -1,62 +1,54 @@
-package com.example.namju.njhj;
+package com.example.hyejin.njhj;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.Environment;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.siegmann.epublib.domain.Book;
-import nl.siegmann.epublib.domain.Resource;
-import nl.siegmann.epublib.domain.TOCReference;
-import nl.siegmann.epublib.epub.EpubReader;
+public class Main3Activity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
-public class Main3Activity extends AppCompatActivity {
+    private TextToSpeech mTTS;
+    static List<File> epubs;
+    static List<String> names;
+    ArrayAdapter<String> adapter;
+    static File selected;
+    Button refreshbtn;
 
-    TextView textView1; // 전자책 제목
-    String epubName;
-    String encodeResult;
-    WebView webView;
+    String File_Name = "";
+    String File_extend = "";
+    String Save_Path;
+    String Save_folder = "/Epub";
+    String bookName;
 
-    LayoutInflater inflater;
-    List<RowData> contentDetails;
-    public static final String BOOK_NAME = "books/novel.epub"; // 변경 !!!!!!!
+    //DownloadThread dThread;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main3);
+        setContentView(R.layout.activity_main2);
 
-        textView1 = (TextView) findViewById(R.id.textView1);
+        mTTS = new TextToSpeech(getApplicationContext(), this);
+        Intent intent_book = getIntent();
+        bookName = intent_book.getExtras().getString("BOOKNAME"); // 2Activity에서 책이름을 받아옴
 
-        Intent intent = getIntent();
-        epubName = intent.getExtras().getString("EPUBNAME");
-        textView1.setText(epubName);
-
-        /*
-        encodeResult = null;
+        String encodeResult = null;
         try {
-            encodeResult = URLEncoder.encode(epubName, "utf-8");
+            encodeResult = URLEncoder.encode(bookName, "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -64,242 +56,183 @@ public class Main3Activity extends AppCompatActivity {
         Uri u = Uri.parse("http://computer.kevincrack.com/download.jsp?name=" + encodeResult);
         i.setData(u);
         startActivity(i);
-        */
 
-        inflater = (LayoutInflater) getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        contentDetails = new ArrayList<RowData>();
-        AssetManager assetManager = getAssets();
-
-        try {
-            InputStream epubInputStream = assetManager.open(BOOK_NAME);
-            Book book = (new EpubReader()).readEpub(epubInputStream);
-            // logContentsTable(book.getTableOfContents().getTocReferences(), 0);
-        } catch (IOException e) {
-            Log.e("epublib", e.getMessage());
+        /*다운로드 경로를 */
+        String ext = Environment.getExternalStorageState();
+        if(ext.equals(Environment.MEDIA_MOUNTED)){
+            Save_Path = Environment.getExternalStorageDirectory().getAbsolutePath() + Save_folder;
         }
-        CustomAdapter adapter = new CustomAdapter(this, R.layout.list, R.id.title, contentDetails);
-        setListAdapter(adapter);
-        getListView().setTextFilterEnabled(true);
-    }
 
-    private Handler handler = new Handler() {
-        public void handleMessage(Message message) {
-            Object path = message.obj;
-            if (message.arg1 == RESULT_OK && path != null) {
-                //Toast.makeText(getApplicationContext(), "" + path.toString() + "을 다운로드하였음.", Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(), "다운로드하였음.", Toast.LENGTH_LONG).show();
+        if ((epubs == null) || (epubs.size() == 0)) {
+            epubs = epubList(Environment.getExternalStorageDirectory());
+        }
+
+        final ListView list = (ListView)findViewById(R.id.booklist);
+        names = fileNames(epubs);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selected = epubs.get(position);
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("bpath", selected.getAbsolutePath());
+                setResult(Activity.RESULT_OK, resultIntent);
+
+                // Toast.makeText(getApplicationContext(),"click",Toast.LENGTH_LONG).show(); // 값 체크 및 수정용 필요시 사용할 예정.
+
+                /*                 전자책 다운로드 로직                  */
+                String temp = list.getItemAtPosition(position).toString()+".epub"; // 파일 이름
+                String origin ="http://computer.kevincrack.com/download.jsp?name=";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                Uri u = Uri.parse(origin+temp);
+                i.setData(u);
+                startActivity(i);
+
+
+                /*              전자책 다운로드 로직 종료          */
+
+                /*
+               final String fileURL = origin+temp;
+                path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+               final DownloadFilesTask downloadTask = new DownloadFilesTask(Main2Activity.this);
+                downloadTask.execute(fileURL);
+                */
+            }
+        });
+        list.setAdapter(adapter);
+
+        refreshbtn = (Button)findViewById(R.id.refreshlist);
+        refreshbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshList();
+            }
+        });
+
 /*
-                EpubReader epubReader = new EpubReader();
-                Book book = null;
-                try {
-                    book = epubReader.readEpub(new FileInputStream("개미.epub")); // 여기에 경로가 필요할 듯!
-                } catch (IOException e) {
-                    e.printStackTrace();
+        aBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                i++;
+                Handler handler = new Handler();
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        i=0;
+                    }
+                };
+                if(i==1){
+                    handler.postDelayed(r, 300);
+                    String sld = aBtn.getText().toString();
+                    mTTS.speak(sld, TextToSpeech.QUEUE_FLUSH, null);
+
+                }else if(i==2){
+                    i=0;
+                    Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
+                    startActivity(intent);
                 }
-                List<String> titles = book.getMetadata().getTitles();
-                System.out.println("book title:" + (titles.isEmpty() ? "book has no title" : titles.get(0)));
+            }
+        });
 */
+    }
+    /*
+        private class DownloadFilesTask extends AsyncTask<String, String, Long> {
+            private Context context;
+
+
+
+            public DownloadFilesTask(Context context) {
+                this.context = context;
+            }
+
+            protected Long doInBackground(String... string_url) {
+                long FileSize = -1;
+                InputStream input = null;
+                OutputStream output = null;
+                URLConnection connection = null;
+
+                try {
+                    URL url = new URL(string_url[0]);
+                    connection = url.openConnection();
+                    connection.connect();
+
+                    FileSize = connection.getContentLength();
+
+                    input = new BufferedInputStream(url.openStream(), 8192);
+                    path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+                    outputFile = new File(path, "hi");
+                    output = new FileOutputStream(outputFile);
+
+                    output.flush();
+                    output.close();
+                    input.close();
+
+                } catch (Exception e) {
+                    Log.e("Error:", e.getMessage());
+                } finally {
+                    try {
+                        if (output != null)
+                            output.close();
+                        if (input != null)
+                            input.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+                return FileSize;
 
             }
-            else {
-                Toast.makeText(getApplicationContext(), "다운로드 실패", Toast.LENGTH_LONG).show();
-            }
-        } ;
-    };
-
-    public void onClick(View view) {
-        encodeResult = null;
-        try {
-            encodeResult = URLEncoder.encode(epubName, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         }
-        Intent i = new Intent(Intent.ACTION_VIEW); // Server
-        Uri u = Uri.parse("http://computer.kevincrack.com/download.jsp?name=" + encodeResult);
-        i.setData(u);
-        startActivity(i);
+    */
+    private List<String> fileNames(List<File> files){
+        List<String> res = new ArrayList<String>();
+        for (int i = 0; i<files.size(); i++){
+            res.add(files.get(i).getName().replace(".epub",""));
+        }
+        return res;
+    }
 
-        // 디바이스에 Download파일안에 다운받아짐
-        /* EPUB OPEN */
-        webView = (WebView) findViewById(R.id.webView); // ??
+    private List<File> epubList(File dir) {
+        List<File> res = new ArrayList<File>();
+
+        if(dir.isDirectory()){
+            File[] f = dir.listFiles();
+            if (f != null) {
+                for (int i = 0; i < f.length; i++) {
+                    if (f[i].isDirectory()) {
+                        res.addAll(epubList(f[i]));
+                    } else {
+                        String lowerCasedName = f[i].getName().toLowerCase();
+                        if (lowerCasedName.endsWith(".epub")) {
+                            res.add(f[i]);
+
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    private void refreshList(){
+        epubs = epubList(Environment.getExternalStorageDirectory());
+        names.clear();
+        names.addAll(fileNames(epubs));
+        this.adapter.notifyDataSetChanged();
+    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void onInit(int i){
+        mTTS.speak("여기는 어떻게 처리를 할까요", TextToSpeech.QUEUE_FLUSH, null);
+    }
 /*
-        EpubReader epubReader = new EpubReader();
-        Book book = null;
-        try {
-            book = epubReader.readEpub(new FileInputStream(epubName)); // 여기에 경로가 필요할 듯!
-        } catch (IOException e) {
-            e.printStackTrace();
+    public boolean onTouchEvent(MotionEvent event){
+
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            String sld = cBtn.getText().toString();
+            mTTS.speak(sld, TextToSpeech.QUEUE_FLUSH, null);
         }
-        List<String> titles = book.getMetadata().getTitles();
-        //System.out.println("book title:" + (titles.isEmpty() ? "book has no title" : titles.get(0)));
-        Log.d("BookTITLE", titles.get(0));
-*/
-
-        /*
-        encodeResult = null;
-        try {
-            encodeResult = URLEncoder.encode(epubName, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        String urlResult = "http://computer.kevincrack.com/download.jsp?name=" + encodeResult;
-
-        Intent intent = new Intent(this, MyIntentService.class);
-        Messenger messenger = new Messenger(handler);
-        intent.putExtra("MESSENGER", messenger);
-        //intent.setData(Uri.parse("http://computer.kevincrack.com/download.jsp"));
-        intent.setData(Uri.parse(urlResult));
-        //intent.putExtra("urlpath", "http://computer.kevincrack.com/download.jsp");
-        intent.putExtra("urlpath", urlResult);
-        startService(intent);
-        */
-    }
+        return true;
+    }*/
 }
-/*
-class Book {
-    private ZipFile mZip;
-
-    public Book(String fileName) {
-        try {
-            mZip = new ZipFile(fileName);
-        } catch (IOException e) {
-            //Log.e(Globals.TAG, "Error opening file", e);
-        }
-    }
-
-    public InputStream fetchFromZip(String fileName) {
-        InputStream in = null;
-        ZipEntry containerEntry = mZip.getEntry(fileName);
-        if (containerEntry != null) {
-            try {
-                in = mZip.getInputStream(containerEntry);
-            } catch (IOException e) {
-                //Log.e(Globals.TAG, "Error reading zip file " + fileName, e);
-            }
-        }
-        return in;
-    }
-}
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-private class CustomAdapter extends ArrayAdapter<RowData> {
-    public CustomAdapter(Context context, int resource, int textViewResourceId, List<RowData> objects) {
-        super(context, resource, textViewResourceId, objects);
-    }
-
-    private class ViewHolder {
-        private View row;
-        private TextView titleHolder = null;
-        public ViewHolder(View row) {
-            super();
-            this.row = row;
-        }
-        public TextView getTitle() {
-            if (null == titleHolder)
-                titleHolder = (TextView) row.findViewById(R.id.title);
-            return titleHolder;
-        }
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
-        TextView title = null;
-        RowData rowData = getItem(position);
-        if (null == convertView) {
-           convertView = inflater.inflate(R.layout.list, null);
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
-        }
-        holder = (ViewHolder) convertView.getTag();
-        title = holder.getTitle();
-        title.setText(rowData.getTitle());
-        return convertView;
-    }
-}
-    private void logContentsTable(List<TOCReference> tocReferences, int depth) {
-        if (tocReferences == null)
-            return;
-        for (TOCReference tocReference:tocReferences) {
-            StringBuilder tocString = new StringBuilder();
-            for (int i = 0; i < depth; i++) {
-                tocString.append("\t");
-            }
-            tocString.append(tocReference.getTitle());
-            RowData row = new RowData();
-            row.setTitle(tocString.toString());
-            row.setResource(tocReference.getResource());
-            contentDetails.add(row);
-            logContentsTable(tocReference.getChildren(), depth + 1);
-        }
-    }
-
-private class RowData {
-    private String title;
-    private Resource resource;
-
-    public RowData() {
-        super();
-    }
-
-    public String getTitle() { return title; }
-    public Resource getResource() { return resource;}
-    public void setTitle(String title) { this.title = title;}
-    public void setResource(Resource resource) { this.resource = resource;}
-}
-
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        RowData rowData = contentDetails.get(position);
-        Intent intent = new Intent(MicroEpubReaderActivity.this, ContentViewActivity.class);
-        intent.putExtra("display", new String(rowData.getResource().getData()));
-        startActivity(intent);
-
-    }
-
-}
-
-
-
-
-
-
-
-
-
