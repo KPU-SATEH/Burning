@@ -1,87 +1,51 @@
-package com.example.hyejin.burning_stt;
+package com.example.hyejin.njhj;
 
 import android.content.Intent;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
+import android.net.sip.SipAudioCall;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-import java.util.ArrayList;
+public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
-public class MainActivity extends AppCompatActivity {
-    Intent i;
-    SpeechRecognizer mRecognizer;
-    TextView tv;
+    Button startBtn;
+    RelativeLayout rLayout;
+    private TextToSpeech mTTS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+        startBtn = (Button) findViewById(R.id.startBtn);
+        rLayout = (RelativeLayout)findViewById(R.id.activity_main);
+        mTTS = new TextToSpeech(getApplicationContext(), this);
 
-        mRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        mRecognizer.setRecognitionListener(listener);
-        mRecognizer.startListening(i);
+        /*버튼 클릭시 Main2Activity로 이동*/
+        startBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+                startActivity(intent);
+            }
+        });
 
-        tv = (TextView)findViewById(R.id.textView);
+        /*화면 아무곳이나 클릭시 Main2Activity로 이동*/
+        rLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+                startActivity(intent);
+            }
+        });
     }
 
-    private RecognitionListener listener = new RecognitionListener() {
-        @Override
-        public void onReadyForSpeech(Bundle params) {
-
-        }
-
-        @Override
-        public void onBeginningOfSpeech() {
-
-        }
-
-        @Override
-        public void onRmsChanged(float rmsdB) {
-
-        }
-
-        @Override
-        public void onBufferReceived(byte[] buffer) {
-
-        }
-
-        @Override
-        public void onEndOfSpeech() {
-
-        }
-
-        @Override
-        public void onError(int error) {
-
-        }
-
-        @Override
-        public void onResults(Bundle results) {
-            String key;
-            key = SpeechRecognizer.RESULTS_RECOGNITION;
-            ArrayList<String> mResult = results.getStringArrayList(key);
-            String[] rs = new String[mResult.size()];
-            mResult.toArray(rs);
-            tv.setText("" + rs[0]);
-
-        }
-
-        @Override
-        public void onPartialResults(Bundle partialResults) {
-
-        }
-
-        @Override
-        public void onEvent(int eventType, Bundle params) {
-
-        }
-    };
-
+    /*처음 화면이 뜨면 다음의 글이 음성 지원 됨*/
+    public void onInit(int i){
+        mTTS.speak("전자책 목록으로 이동하시려면 화면의 아무곳이나 터치해주세요", TextToSpeech.QUEUE_FLUSH, null);
+    }
 }
