@@ -18,6 +18,8 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using eBdb.EpubReader;
 using Ionic.Zip;
+using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace ContentProvider
 {
@@ -49,6 +51,23 @@ namespace ContentProvider
             
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
+
+            try
+            {
+                MySqlConnection mycon = new MySqlConnection("server = computer.kevincrack.com; uid = root; pwd = h0tsixkevin; database = epub;");
+                mycon.Open();
+                MySqlCommand mycom = new MySqlCommand("select * from epubfile", mycon);
+                MySqlDataReader myread = mycom.ExecuteReader();
+
+                while (myread.Read())
+                {
+                    MessageBox.Show(myread["filename"].ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
