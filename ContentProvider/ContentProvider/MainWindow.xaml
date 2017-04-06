@@ -27,6 +27,8 @@
                 <MenuItem Header="New " HorizontalAlignment="Left" Click="menuNew_Click" InputGestureText="Ctrl+n"/>
                 <MenuItem Header="Open" HorizontalAlignment="Left" Click="menuOpen_Click" InputGestureText="Ctrl+o"/>
                 <MenuItem Header="Save " HorizontalAlignment="Left" Click="menuSave_Click" InputGestureText="Ctrl+s"/>
+                <MenuItem Header="Upload" HorizontalAlignment="Left" Click="menuUpload_Click"/>
+                <MenuItem Header="Download" HorizontalAlignment="Left" Click="menuDownload_Click"/>
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Redo" HorizontalAlignment="Left" Click="menuRedo_Click" InputGestureText="Ctrl+z"/>

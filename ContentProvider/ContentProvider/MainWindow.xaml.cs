@@ -51,23 +51,6 @@ namespace ContentProvider
             
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
-
-            try
-            {
-                MySqlConnection mycon = new MySqlConnection("server = computer.kevincrack.com; uid = root; pwd = h0tsixkevin; database = epub;");
-                mycon.Open();
-                MySqlCommand mycom = new MySqlCommand("select * from epubfile", mycon);
-                MySqlDataReader myread = mycom.ExecuteReader();
-
-                while (myread.Read())
-                {
-                    MessageBox.Show(myread["filename"].ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
@@ -240,6 +223,30 @@ namespace ContentProvider
                 img = ByteArrayToImage(CanvasToBitmapBytes());
                 img.Save(saveFileName, System.Drawing.Imaging.ImageFormat.Bmp);
                 img.Dispose();
+            }
+        }
+
+        private void menuUpload_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void menuDownload_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MySqlConnection mycon = new MySqlConnection("server = computer.kevincrack.com; uid = root; pwd = h0tsixkevin; database = epub;");
+                mycon.Open();
+                MySqlCommand mycom = new MySqlCommand("select * from epubfile", mycon);
+                MySqlDataReader myread = mycom.ExecuteReader();
+
+                while (myread.Read())
+                {
+                    MessageBox.Show(myread["filename"].ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
 
