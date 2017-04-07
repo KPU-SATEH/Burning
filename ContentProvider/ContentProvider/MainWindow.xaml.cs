@@ -1,25 +1,19 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Drawing;
-using System.Net;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 using eBdb.EpubReader;
-using Ionic.Zip;
-using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
+using System.ComponentModel;
+using SHDocVw;
+using System.Text;
+using System.Xml;
 
 namespace ContentProvider
 {
@@ -51,6 +45,8 @@ namespace ContentProvider
             
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
+
+            //test();
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
@@ -226,28 +222,53 @@ namespace ContentProvider
             }
         }
 
+        /*
+        public SHDocVw.WebBrowser FindIE(string url)
+        {
+            Uri uri = new Uri(url);
+            var shellWindows = new SHDocVw.ShellWindows();
+            foreach (SHDocVw.WebBrowser wb in shellWindows)
+            {
+                if (!string.IsNullOrEmpty(wb.LocationURL))
+                {
+                    Uri wbUri = new Uri(wb.LocationURL);
+                    System.Diagnostics.Debug.WriteLine(wbUri);
+                    if (wbUri.Equals(uri))
+                        return wb;
+                }
+            }
+            return null;
+        }
+        */
+
         private void menuUpload_Click(object sender, RoutedEventArgs e)
         {
+            /*
+            try
+            {
+                string str = "개미.epub";
+                byte[] utf8bytes = Encoding.UTF8.GetBytes(str);
+
+                var ie = new InternetExplorer();
+                var webBrowser = (IWebBrowserApp)ie;
+                webBrowser.Visible = true;
+                webBrowser.Navigate("http://computer.kevincrack.com/download.jsp?name=" + System.Web.HttpUtility.UrlEncode(utf8bytes));
+
+                SHDocVw.WebBrowser wb = FindIE("http://computer.kevincrack.com/download.jsp?name=" + System.Web.HttpUtility.UrlEncode(utf8bytes));
+                wb.Quit();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            */
         }
 
         private void menuDownload_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                MySqlConnection mycon = new MySqlConnection("server = computer.kevincrack.com; uid = root; pwd = h0tsixkevin; database = epub;");
-                mycon.Open();
-                MySqlCommand mycom = new MySqlCommand("select * from epubfile", mycon);
-                MySqlDataReader myread = mycom.ExecuteReader();
-
-                while (myread.Read())
-                {
-                    MessageBox.Show(myread["filename"].ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
+            FileChoiceWindow fcw = new FileChoiceWindow();
+            fcw.Owner = this;
+            fcw.Show();
         }
 
         private void Strokes_Changed(object sender, System.Windows.Ink.StrokeCollectionChangedEventArgs e)
