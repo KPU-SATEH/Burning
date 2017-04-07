@@ -9,11 +9,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using eBdb.EpubReader;
-using MySql.Data.MySqlClient;
-using System.ComponentModel;
-using SHDocVw;
-using System.Text;
-using System.Xml;
 
 namespace ContentProvider
 {
@@ -56,7 +51,7 @@ namespace ContentProvider
             {
                 contentData = epub.Content[--count] as ContentData;
             }
-            catch(ArgumentOutOfRangeException ex)
+            catch(ArgumentOutOfRangeException)
             {
                 MessageBox.Show("Its first page!");
                 count = 0;
@@ -222,46 +217,9 @@ namespace ContentProvider
             }
         }
 
-        /*
-        public SHDocVw.WebBrowser FindIE(string url)
-        {
-            Uri uri = new Uri(url);
-            var shellWindows = new SHDocVw.ShellWindows();
-            foreach (SHDocVw.WebBrowser wb in shellWindows)
-            {
-                if (!string.IsNullOrEmpty(wb.LocationURL))
-                {
-                    Uri wbUri = new Uri(wb.LocationURL);
-                    System.Diagnostics.Debug.WriteLine(wbUri);
-                    if (wbUri.Equals(uri))
-                        return wb;
-                }
-            }
-            return null;
-        }
-        */
-
         private void menuUpload_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            try
-            {
-                string str = "개미.epub";
-                byte[] utf8bytes = Encoding.UTF8.GetBytes(str);
 
-                var ie = new InternetExplorer();
-                var webBrowser = (IWebBrowserApp)ie;
-                webBrowser.Visible = true;
-                webBrowser.Navigate("http://computer.kevincrack.com/download.jsp?name=" + System.Web.HttpUtility.UrlEncode(utf8bytes));
-
-                SHDocVw.WebBrowser wb = FindIE("http://computer.kevincrack.com/download.jsp?name=" + System.Web.HttpUtility.UrlEncode(utf8bytes));
-                wb.Quit();
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            */
         }
 
         private void menuDownload_Click(object sender, RoutedEventArgs e)
