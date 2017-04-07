@@ -14,11 +14,6 @@ namespace ContentProvider
 
     public partial class FileChoiceWindow : Window
     {
-        private struct User
-        {
-            public String Name { get; set; }
-        };
-
         public FileChoiceWindow()
         {
             InitializeComponent();
