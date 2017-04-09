@@ -1,4 +1,4 @@
-package com.example.namju.njhj;
+package com.dteviot.epubviewer;
 
 import android.util.Log;
 

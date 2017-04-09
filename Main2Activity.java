@@ -1,6 +1,8 @@
-package com.example.hyejin.njhj;
+package com.dteviot.epubviewer;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,9 +18,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by hyejin on 2017-04-01.
+ */
 
-
-public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnInitListener{
+public class Main2Activity extends Activity implements TextToSpeech.OnInitListener{
+    private final static int LIST_EPUB_ACTIVITY_ID = 0;
 
     long mStartTime, mEndTime;
     EpubXMLParser mXMLParser;
@@ -69,13 +74,15 @@ public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnI
         });
 
         doubleTap.setOnDoubleClickListener(new DoubleTap.OnDoubleClickListener() {
+            static final int REQUEST_CODE = 1111;
             @Override
             public void onDoubleClick(View view) {
-                Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
+                Intent intent = new Intent(Main2Activity.this, MainActivity.class);
                 intent.putExtra("BOOKNAME", list.get(position_n));
-                Log.d("GETLIST", list.get(position_n));
-                startActivity(intent);
-                Log.d("TEST","hello");
+                System.out.println("메인 이  엑티비티에 도착했어요.");
+                //Log.d("GETLIST", list.get(position_n));
+                startActivityForResult(intent,REQUEST_CODE);
+                Log.d("TEST","여기로");
             }
         });
 
@@ -86,8 +93,6 @@ public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnI
     }
 
 
-
-
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -95,7 +100,10 @@ public class Main2Activity extends AppCompatActivity implements TextToSpeech.OnI
             Log.d("Taken Time", Long.toString((mEndTime - mStartTime) / 1000L));
 
             ArrayList<EpubDatas> dataList = mXMLParser.getResult();
+
+            System.out.println("hello");
             int dataListSize = dataList.size();
+            System.out.println("hello]"+dataListSize);
             Log.d("Data List Size", Integer.toString(dataListSize));
             for (int i=0; i<dataListSize; i++) {
                 Log.d("XML Parsing Result", dataList.get(i).getEpub());

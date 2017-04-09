@@ -1,17 +1,23 @@
-package com.example.hyejin.njhj;
+package com.dteviot.epubviewer;
 
 import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -19,7 +25,12 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main3Activity extends AppCompatActivity implements TextToSpeech.OnInitListener {
+import static com.dteviot.epubviewer.ListEpubActivity.FILENAME_EXTRA;
+import static com.dteviot.epubviewer.ListEpubActivity.PAGE_EXTRA;
+
+public class Main3Activity extends Activity implements TextToSpeech.OnInitListener {
+    public static final String FILENAME_EXTRA = "FILENAME_EXTRA";
+    public static final String PAGE_EXTRA = "PAGE_EXTRA";
 
     private TextToSpeech mTTS;
     static List<File> epubs;
@@ -33,6 +44,8 @@ public class Main3Activity extends AppCompatActivity implements TextToSpeech.OnI
     String Save_Path;
     String Save_folder = "/Epub";
     String bookName;
+    private String mRootPath;
+
 
     //DownloadThread dThread;
 
@@ -40,18 +53,20 @@ public class Main3Activity extends AppCompatActivity implements TextToSpeech.OnI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("여기다 종훈아1");
         setContentView(R.layout.activity_main2);
-
+        System.out.println("여기다 종훈아3");
         mTTS = new TextToSpeech(getApplicationContext(), this);
         Intent intent_book = getIntent();
+
         bookName = intent_book.getExtras().getString("BOOKNAME"); // 2Activity에서 책이름을 받아옴
 
         String encodeResult = null;
         try {
             encodeResult = URLEncoder.encode(bookName, "utf-8");
-        } catch (UnsupportedEncodingException e) {
+         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
+         }
         Intent i = new Intent(Intent.ACTION_VIEW); // Server
         Uri u = Uri.parse("http://computer.kevincrack.com/download.jsp?name=" + encodeResult);
         i.setData(u);
@@ -74,30 +89,29 @@ public class Main3Activity extends AppCompatActivity implements TextToSpeech.OnI
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selected = epubs.get(position);
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("bpath", selected.getAbsolutePath());
-                setResult(Activity.RESULT_OK, resultIntent);
-
-                // Toast.makeText(getApplicationContext(),"click",Toast.LENGTH_LONG).show(); // 값 체크 및 수정용 필요시 사용할 예정.
-
-                /*                 전자책 다운로드 로직                  */
-                String temp = list.getItemAtPosition(position).toString()+".epub"; // 파일 이름
-                String origin ="http://computer.kevincrack.com/download.jsp?name=";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                Uri u = Uri.parse(origin+temp);
-                i.setData(u);
-                startActivity(i);
+                Log.d("here","here");
+                /*잠시 주석처리
+                Intent in = new Intent(Main3Activity.this, Main4Activity.class);
+                in.putExtra("OPENBOOK", names.get(position));
+                startActivity(in);*/
 
 
-                /*              전자책 다운로드 로직 종료          */
+                String fileName = titleToFileName(((TextView)view).getText().toString());
+                System.out.println("실험1" + fileName);
+                Log.d("here","here3");
+               // Intent intent = new Intent(Main3Activity.this, EpubWebView.class);
+                Intent intent = new Intent();
+                intent.putExtra(FILENAME_EXTRA, fileName);
+                // set page to first, because ListChaptersActivity returns page to start at
+                intent.putExtra(PAGE_EXTRA, 0);
+                setResult(RESULT_OK, intent);
+                System.out.println("화면의 아무곳이나 터치해");
+                finish();
+                System.out.println("화면의 아무곳이나 터치해3");
+                Log.d("here","here4"+fileName);
 
-                /*
-               final String fileURL = origin+temp;
-                path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-               final DownloadFilesTask downloadTask = new DownloadFilesTask(Main2Activity.this);
-                downloadTask.execute(fileURL);
-                */
+
+
             }
         });
         list.setAdapter(adapter);
@@ -110,81 +124,18 @@ public class Main3Activity extends AppCompatActivity implements TextToSpeech.OnI
             }
         });
 
-/*
-        aBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                i++;
-                Handler handler = new Handler();
-                Runnable r = new Runnable() {
-                    @Override
-                    public void run() {
-                        i=0;
-                    }
-                };
-                if(i==1){
-                    handler.postDelayed(r, 300);
-                    String sld = aBtn.getText().toString();
-                    mTTS.speak(sld, TextToSpeech.QUEUE_FLUSH, null);
 
-                }else if(i==2){
-                    i=0;
-                    Intent intent = new Intent(Main2Activity.this, Main3Activity.class);
-                    startActivity(intent);
-                }
-            }
-        });
-*/
     }
-    /*
-        private class DownloadFilesTask extends AsyncTask<String, String, Long> {
-            private Context context;
 
+    private String titleToFileName(String title) {
+        File path = Environment
+                .getExternalStorageDirectory();
+        mRootPath = path.toString();
 
+        return mRootPath + "/Download/" + title+".epub";
+       // return title;
+    }
 
-            public DownloadFilesTask(Context context) {
-                this.context = context;
-            }
-
-            protected Long doInBackground(String... string_url) {
-                long FileSize = -1;
-                InputStream input = null;
-                OutputStream output = null;
-                URLConnection connection = null;
-
-                try {
-                    URL url = new URL(string_url[0]);
-                    connection = url.openConnection();
-                    connection.connect();
-
-                    FileSize = connection.getContentLength();
-
-                    input = new BufferedInputStream(url.openStream(), 8192);
-                    path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-
-                    outputFile = new File(path, "hi");
-                    output = new FileOutputStream(outputFile);
-
-                    output.flush();
-                    output.close();
-                    input.close();
-
-                } catch (Exception e) {
-                    Log.e("Error:", e.getMessage());
-                } finally {
-                    try {
-                        if (output != null)
-                            output.close();
-                        if (input != null)
-                            input.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-                return FileSize;
-
-            }
-        }
-    */
     private List<String> fileNames(List<File> files){
         List<String> res = new ArrayList<String>();
         for (int i = 0; i<files.size(); i++){
@@ -203,10 +154,15 @@ public class Main3Activity extends AppCompatActivity implements TextToSpeech.OnI
                     if (f[i].isDirectory()) {
                         res.addAll(epubList(f[i]));
                     } else {
-                        String lowerCasedName = f[i].getName().toLowerCase();
-                        if (lowerCasedName.endsWith(".epub")) {
-                            res.add(f[i]);
-
+                        //String lowerCasedName = f[i].getName().toLowerCase();
+                        //System.out.println("태스트13 "+ f[i]);
+                        String aa =  f[i].toString();
+                       // System.out.println("태스트14 "+ lowerCasedName);
+                        if ( aa. startsWith("/storage/emulated/0/Download/")) {
+                            if (aa.endsWith(".epub")) {
+                                res.add(f[i]);
+                                System.out.println("파이리 : " + aa);
+                            }
                         }
                     }
                 }
@@ -226,13 +182,8 @@ public class Main3Activity extends AppCompatActivity implements TextToSpeech.OnI
     public void onInit(int i){
         mTTS.speak("여기는 어떻게 처리를 할까요", TextToSpeech.QUEUE_FLUSH, null);
     }
-/*
-    public boolean onTouchEvent(MotionEvent event){
 
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            String sld = cBtn.getText().toString();
-            mTTS.speak(sld, TextToSpeech.QUEUE_FLUSH, null);
-        }
-        return true;
-    }*/
+
+
 }
+

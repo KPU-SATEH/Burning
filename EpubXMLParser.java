@@ -1,4 +1,4 @@
-package com.example.namju.njhj;
+package com.dteviot.epubviewer;
 
 import android.os.Handler;
 import android.util.Log;
@@ -81,7 +81,7 @@ public class EpubXMLParser extends XMLParser implements Runnable {
                 Log.d("EpubXMLParser", e.getMessage());
             }
         }
-        Log.d("EpubXMLParserResult", Integer.toString(mDataList.size()));
+        //Log.d("EpubXMLParserResult", Integer.toString(mDataList.size()));
     }
 
     // 2. getResult()메소드 실행 시, mDataList값이 없음....

@@ -1,15 +1,13 @@
-package com.example.namju.njhj;
+package com.dteviot.epubviewer;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by namju on 2017-03-24.
+ * Created by hyejin on 2017-04-01.
  */
 
-// EPUB 하나에 대한 정보
-// implements Parcelable을 한 이유 : 액티비티 간에 정보를 전달하기 위함
-public class EpubDatas implements Parcelable {
+public class EpubDatas implements Parcelable{
     private String epub = "";
 
     // 생성자
