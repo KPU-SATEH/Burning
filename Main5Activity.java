@@ -2,18 +2,28 @@ package com.dteviot.epubviewer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Main5Activity extends Activity implements View.OnClickListener {
+public class Main5Activity extends Activity implements View.OnClickListener, TextToSpeech.OnInitListener {
 
     Button btn_connect;
     TextView textView;
+    ImageView imageview;
+    Bitmap bitmap;
+    String path;
+
+    private TextToSpeech mTTS;
 
     private static final String TAG = "Main";
 
@@ -33,6 +43,17 @@ public class Main5Activity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main5);
+
+        Intent intent= getIntent();
+        String getkey = intent.getStringExtra("key");   //STT를 통해 사용자가 말한 단어를 MainActivity에서 받아옴
+        String bookName = intent.getStringExtra("BOOKNAME");
+        mTTS = new TextToSpeech(getApplicationContext(), this);
+
+
+        path = Environment.getExternalStorageDirectory().getAbsolutePath();
+        bitmap = BitmapFactory.decodeFile(path + "/Download/"+ bookName+"/OEBPS/Images/"+ getkey+ ".png");    //이미지가 저장된 경로에서 이미지를 갖고오기
+       imageview = (ImageView)findViewById(R.id.imageview);
+        imageview.setImageBitmap(bitmap);   //가지고 온 이미지 띄어주기
 
         btn_connect = (Button) findViewById(R.id.btn_connect);
         textView = (TextView) findViewById(R.id.textView);
@@ -78,5 +99,10 @@ public class Main5Activity extends Activity implements View.OnClickListener {
                 }
                 break;
         }
+    }
+
+    public void onInit(int i){
+        mTTS.speak("촉각그래픽 디스플레이로 사진전송을 위한 블루투스 설정 화면입니다." +
+                "블루투스사용을위해 화면을 터치해 주시기바랍니다.", TextToSpeech.QUEUE_FLUSH, null);
     }
 }

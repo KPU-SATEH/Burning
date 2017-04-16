@@ -2,8 +2,12 @@ package com.dteviot.epubviewer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -11,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dteviot.epubviewer.WebServer.FileRequestHandler;
@@ -20,6 +25,8 @@ import com.dteviot.epubviewer.epub.Book;
 import com.dteviot.epubviewer.epub.TableOfContents;
 
 import java.util.ArrayList;
+
+import nl.siegmann.epublib.epub.Main;
 
 /*오늘코드*/
 public class MainActivity extends Activity implements IResourceSource {
@@ -129,6 +136,7 @@ public class MainActivity extends Activity implements IResourceSource {
             String key;
             key = SpeechRecognizer.RESULTS_RECOGNITION;
 
+
             ArrayList<String> mResult = results.getStringArrayList(key);
             for(int i=0;i<mResult.size();i++) {
                 Toast.makeText(getApplicationContext(), mResult.get(i), Toast.LENGTH_LONG).show();
@@ -140,15 +148,9 @@ public class MainActivity extends Activity implements IResourceSource {
             in.putExtra("ImgFile", mResult.get(1));
             startActivity(in);
 
-
-
-
-
-
-
-
-
-
+            Intent input = new Intent(MainActivity.this, Main5Activity.class);
+            input.putExtra("key", key);
+            startActivity(input);
 
         }
 
