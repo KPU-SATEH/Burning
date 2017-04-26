@@ -71,7 +71,8 @@ public class Main5Activity extends Activity implements View.OnClickListener, Tex
 
         // BluetoothService클래스 생성
         if(btService == null) {
-            btService = new BluetoothService(this, mHandler);
+           btService = new BluetoothService(Main5Activity.this, mHandler);
+            // btService = new BluetoothService(this, mHandler); // 원래 this였음
         }
 
     }
@@ -88,10 +89,28 @@ public class Main5Activity extends Activity implements View.OnClickListener, Tex
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
+            // scanDevice()메소드를 호출하고, 기기를 선택하였을 경우
+            // 결과값을 반환 받았을 때
+            // MainActivity에서 처리해주는 코드임
+            case REQUEST_CONNECT_DEVICE:
+                if(resultCode == Activity.RESULT_OK) {
+
+                    // getDeviceInfo(data)이 메소드는
+                    // 기기선택 액티비티에서 선택한 기기의 정보를 받아서
+                    // getDeviceInfo()라는 메소드로 전달을 해주고
+                    // getDeviceInfo()메소드는 그 정보를 이용하여 블루투스 연결을 시도
+
+                    btService.getDeviceInfo(data);
+
+                    Log.d("D", "i를 이용해서 블루투스 연결 시도");
+                }
+                break;
+
             case REQUEST_ENABLE_BT: // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
-                    // "확인"을 눌렀을 때
-                    //btService.getDeviceState(data);
+                    // 블루투스가 활성화 된 상태일 때
+                    btService.scanDevice(); // 기기 검색을 요청하는 메소드 추가
+                    Log.d("D", "기기 검색 요청");
                 }
                 else {
                     // "취소"를 눌렀을 때

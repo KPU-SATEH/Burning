@@ -1,4 +1,4 @@
-package com.example.namju.bluetooth;
+package com.dteviot.epubviewer;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
