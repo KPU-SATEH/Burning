@@ -34,6 +34,9 @@
                 <MenuItem Header="Redo" HorizontalAlignment="Left" Click="menuRedo_Click" InputGestureText="Ctrl+z"/>
                 <MenuItem Header="Undo" HorizontalAlignment="Left" Click="menuUndo_Click" InputGestureText="Ctrl+y"/>
             </MenuItem>
+            <MenuItem Header="Image">
+                <MenuItem Header="Image find" HorizontalAlignment="Left" Click="imageFind_Click"/>
+            </MenuItem>
         </Menu>
 
         <Grid Margin="0,18,-0.4,0">

@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip">
-      <HintPath>..\..\..\..\..\Downloads\epubReader-v.1.0.0.6\epubReader-v.1.0.0.6\Ionic.Zip.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

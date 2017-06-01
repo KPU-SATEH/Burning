@@ -41,7 +41,12 @@ namespace ContentProvider
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
 
-            //test();
+            // url : http://susemi99.kr/1651
+            string searchName = "hello";
+            string searchURL = "https://apis.daum.net/search/image?apikey=a509068e1960142d8d73fa4240a49ae1&q=" + searchName + "&output=json";
+
+
+            //MessageBox.Show(searchURL);
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
@@ -346,6 +351,13 @@ namespace ContentProvider
         private void btnChoice_Click(object sender, RoutedEventArgs e)
         {
             this.myInkCanvas.EditingMode = InkCanvasEditingMode.Select;
+        }
+
+        private void imageFind_Click(object sender, RoutedEventArgs e)
+        {
+            imageFind iF = new imageFind();
+            iF.Owner = this;
+            iF.Show();
         }
     }
 }
