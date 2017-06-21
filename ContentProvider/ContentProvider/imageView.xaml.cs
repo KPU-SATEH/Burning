@@ -23,7 +23,6 @@ namespace ContentProvider
         int maxNum = Data.Count();
         BitmapImage img;
 
-
         public imageView()
         {
             InitializeComponent();
