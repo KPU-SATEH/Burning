@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="imageFind" Height="80" Width="300" ResizeMode="NoResize">
     <Grid>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="192" TextChanged="textBox_TextChanged"/>
-        <Button x:Name="button" Content="search" HorizontalAlignment="Left" Margin="207,10,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="192" />
+        <Button x:Name="button" Content="search" HorizontalAlignment="Left" Margin="207,10,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
 
     </Grid>
 </Window>

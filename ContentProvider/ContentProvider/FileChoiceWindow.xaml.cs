@@ -54,7 +54,7 @@ namespace ContentProvider
                     var ie = new InternetExplorer();
                     var webBrowser = (IWebBrowserApp)ie;
                     webBrowser.Visible = true;
-                    webBrowser.Navigate("http://computer.kevincrack.com/download.jsp?name=" + System.Web.HttpUtility.UrlEncode(utf8bytes));
+                    webBrowser.Navigate("http://computer.kevincrack.com/download2.jsp?name=" + System.Web.HttpUtility.UrlEncode(utf8bytes));
 
                     //SHDocVw.WebBrowser wb = FindIE("http://computer.kevincrack.com/download.jsp?name=" + System.Web.HttpUtility.UrlEncode(utf8bytes));
                     //wb.Quit();

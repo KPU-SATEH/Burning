@@ -9,6 +9,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using eBdb.EpubReader;
+using Renci.SshNet;
+using SHDocVw;
 
 namespace ContentProvider
 {
@@ -95,6 +97,20 @@ namespace ContentProvider
                 button_back.IsEnabled = true;
                 button_front.IsEnabled = true;
 
+                return openFileDialog.FileName;
+            }
+
+            return null;
+        }
+
+        public string ShowFileOpenDialog2()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "File upload";
+            openFileDialog.Filter = "e-book (*.epub) | *.epub";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
                 return openFileDialog.FileName;
             }
 
@@ -224,7 +240,43 @@ namespace ContentProvider
 
         private void menuUpload_Click(object sender, RoutedEventArgs e)
         {
+            string uploadfile = null;
 
+            FileUploadSTFP(ref uploadfile);
+
+            uploadfile = Path.GetFileName(uploadfile);
+
+            var ie = new InternetExplorer();
+            var webBrowser = (IWebBrowserApp)ie;
+            webBrowser.Visible = false;
+            webBrowser.Navigate("http://computer.kevincrack.com/epub_upload.jsp?name=" + uploadfile);
+        }
+
+        public void FileUploadSTFP(ref string uploadfile)
+        {
+            const string host = ;
+            const int port = ;
+            const string username = ;
+            const string password = ;
+            const string workingdirectory = "/root";
+
+            uploadfile = ShowFileOpenDialog2();
+
+            using (var client = new SftpClient(host, port, username, password))
+            {
+                client.Connect();
+
+                client.ChangeDirectory(workingdirectory);
+
+                var listDirectory = client.ListDirectory(workingdirectory);
+
+                foreach (var fi in listDirectory) ;
+
+                using (var fileStream = new FileStream(uploadfile, FileMode.Open))
+                {
+                    client.UploadFile(fileStream, Path.GetFileName(uploadfile));
+                }
+            }
         }
 
         private void menuDownload_Click(object sender, RoutedEventArgs e)
