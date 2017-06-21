@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ContentProvider"
         mc:Ignorable="d"
-        Title="imageView" Height="700" Width="1000" MinHeight="700" MaxHeight="700" MinWidth="1000" MaxWidth="1000" >
+        Title="imageView" Height="700" Width="1000" MinHeight="700" MaxHeight="700" MinWidth="1000" MaxWidth="1000" 
+        Closing="cleanBackground"
+        >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -75,6 +77,8 @@
 
         <Button x:Name="button_left" Grid.Row="1" Grid.Column="28" Content="&lt;" Click="buttonLeft_Click" />
         <Button x:Name="button_right" Grid.Row="1" Grid.Column="29" Content="&gt;" Click="buttonRight_Click" />
-        <Image x:Name="image" Grid.ColumnSpan="28" Grid.Column="1" Grid.Row="3" Grid.RowSpan="26" />
+        <Button x:Name="myButton" Grid.ColumnSpan="28" Grid.Column="1" Grid.Row="3" Grid.RowSpan="26" Click="ImageButton_Click">
+            <Image x:Name="image" Width="{Binding ElementName=myButton, Path=ActualWidth}" />
+        </Button>
     </Grid>
 </Window>

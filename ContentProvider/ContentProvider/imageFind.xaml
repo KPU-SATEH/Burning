@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ContentProvider"
         mc:Ignorable="d"
-        Title="imageFind" Height="80" Width="300" ResizeMode="NoResize">
+        Title="imageFind" Height="80" Width="300" ResizeMode="NoResize"
+        Closing="cleanBackground"
+        >
     <Grid>
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="192" />
         <Button x:Name="button" Content="search" HorizontalAlignment="Left" Margin="207,10,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>

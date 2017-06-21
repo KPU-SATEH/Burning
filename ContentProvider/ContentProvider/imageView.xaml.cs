@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
+using System.ComponentModel;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ContentProvider
 {
@@ -23,6 +14,13 @@ namespace ContentProvider
         int maxNum = Data.Count();
         BitmapImage img;
 
+        void cleanBackground(object sender, CancelEventArgs e)
+        {
+            MainWindow mw = ((MainWindow)(Application.Current.MainWindow));
+
+            mw.backImage.ImageSource = null;
+        }
+        
         public imageView()
         {
             InitializeComponent();
@@ -56,6 +54,13 @@ namespace ContentProvider
                 img = new BitmapImage(new Uri(Data.Read(num)));
                 image.Source = img;
             }
+        }
+
+        private void ImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mw = ((MainWindow)(Application.Current.MainWindow));
+
+            mw.backImage.ImageSource = new BitmapImage(new Uri(Data.Read(num)));
         }
     }
 }

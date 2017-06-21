@@ -9,8 +9,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using eBdb.EpubReader;
-using Renci.SshNet;
-using SHDocVw;
 
 namespace ContentProvider
 {
