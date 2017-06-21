@@ -9,114 +9,234 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class Main5Activity extends Activity implements View.OnClickListener, TextToSpeech.OnInitListener {
+import com.dteviot.epubviewer.WebServer.ServerSocketThread;
 
-    Button btn_connect;
-    TextView textView;
+import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.Enumeration;
+
+import static android.R.attr.bitmap;
+import static android.R.attr.path;
+
+public class Main5Activity extends Activity implements TextToSpeech.OnInitListener {
+
     ImageView imageview;
     Bitmap bitmap;
     String path;
 
+    String msg = "";
+    boolean isConnecte = true;
+    DataOutputStream os;
+
+    //------소켓통신------//
+    TextView infoIp, infoPort;
+    static final int SocketServerPORT = 8080;
+    ServerSocket serverSocket;
+
+    ServerSocketThread serverSocketThread;
+
     private TextToSpeech mTTS;
 
-    private static final String TAG = "Main";
+    String imagename;
 
-    private static final int REQUEST_CONNECT_DEVICE = 1;
-    private static final int REQUEST_ENABLE_BT = 2;
-
-    private BluetoothService btService = null;
-
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main5);
 
-        Intent intent= getIntent();
-        String getkey = intent.getStringExtra("key");   //STT를 통해 사용자가 말한 단어를 MainActivity에서 받아옴
-        String bookName = intent.getStringExtra("BOOKNAME");
+        Log.d("main5", "메인엑티비티 5에 도착");
+
+        infoIp = (TextView) findViewById(R.id.infoip);
+        infoPort = (TextView) findViewById(R.id.infoport);
+
+        infoIp.setText(getIpAddress());
+
+        serverSocketThread = new ServerSocketThread();
+        serverSocketThread.start();
+
+        Intent intent = getIntent();
+
+        imagename = intent.getExtras().getString("key");
+        /* 값전달 테스트용 */
+        Log.d("TEST", intent.getExtras().getString("test"));
+        Log.d("KEY", intent.getExtras().getString("key"));
+        Log.d("파일네임 : ",Gloval.getB_name());
+
+
         mTTS = new TextToSpeech(getApplicationContext(), this);
 
 
+
         path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        bitmap = BitmapFactory.decodeFile(path + "/Download/"+ bookName+"/OEBPS/Images/"+ getkey+ ".png");    //이미지가 저장된 경로에서 이미지를 갖고오기
-       imageview = (ImageView)findViewById(R.id.imageview);
+        /*--------------------------------수정좀함--------------------------------------------------*/
+        bitmap = BitmapFactory.decodeFile(path + "/Download/"+Gloval.getB_name()+"/OEBPS/Images/"+intent.getExtras().getString("key")+".png");
+        imageview = (ImageView)findViewById(R.id.imageview);
         imageview.setImageBitmap(bitmap);   //가지고 온 이미지 띄어주기
 
-        btn_connect = (Button) findViewById(R.id.btn_connect);
-        textView = (TextView) findViewById(R.id.textView);
-
-        Intent in = getIntent();
-        String str = in.getExtras().getString("ImgFile");
-        try {
-            //textView.setText(str);
-            Log.d("TEXT", "hahahaha");
-            System.out.print("메인 5 에 있다 ");
-        } catch (Exception e) {
-        }
-
-        btn_connect.setOnClickListener(this);
-
-        // BluetoothService클래스 생성
-        if(btService == null) {
-           btService = new BluetoothService(Main5Activity.this, mHandler);
-            // btService = new BluetoothService(this, mHandler); // 원래 this였음
-        }
 
     }
-
+//소켓통신9
     @Override
-    public void onClick(View v) {
-        if(btService.getDeviceState()) {
-            // 블루투스가 지원 가능한 기기일 때
-            btService.enableBluetooth();
-        } else {
-            finish();
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (serverSocket != null) {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode) {
-            // scanDevice()메소드를 호출하고, 기기를 선택하였을 경우
-            // 결과값을 반환 받았을 때
-            // MainActivity에서 처리해주는 코드임
-            case REQUEST_CONNECT_DEVICE:
-                if(resultCode == Activity.RESULT_OK) {
+    private String getIpAddress() {
+        String ip = "";
+        try {
+            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface
+                    .getNetworkInterfaces();
+            while (enumNetworkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = enumNetworkInterfaces
+                        .nextElement();
+                Enumeration<InetAddress> enumInetAddress = networkInterface
+                        .getInetAddresses();
+                while (enumInetAddress.hasMoreElements()) {
+                    InetAddress inetAddress = enumInetAddress.nextElement();
 
-                    // getDeviceInfo(data)이 메소드는
-                    // 기기선택 액티비티에서 선택한 기기의 정보를 받아서
-                    // getDeviceInfo()라는 메소드로 전달을 해주고
-                    // getDeviceInfo()메소드는 그 정보를 이용하여 블루투스 연결을 시도
+                    if (inetAddress.isSiteLocalAddress()) {
+                        ip += "SiteLocalAddress: "
+                                + inetAddress.getHostAddress() + "\n";
+                    }
 
-                    btService.getDeviceInfo(data);
-
-                    Log.d("D", "i를 이용해서 블루투스 연결 시도");
                 }
-                break;
 
-            case REQUEST_ENABLE_BT: // When the request to enable Bluetooth returns
-                if (resultCode == Activity.RESULT_OK) {
-                    // 블루투스가 활성화 된 상태일 때
-                    btService.scanDevice(); // 기기 검색을 요청하는 메소드 추가
-                    Log.d("D", "기기 검색 요청");
+            }
+
+        } catch (SocketException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            ip += "Something Wrong! " + e.toString() + "\n";
+        }
+
+        return ip;
+    }
+
+    public class ServerSocketThread extends Thread {
+
+        @Override
+        public void run() {
+            Socket socket = null;
+
+            try {
+                serverSocket = new ServerSocket(SocketServerPORT);
+                Main5Activity.this.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        infoPort.setText("I'm waiting here: "
+                                + serverSocket.getLocalPort());
+                    }});
+
+                while (true) {
+                    socket = serverSocket.accept();
+                    FileTxThread fileTxThread = new FileTxThread(socket);
+                    fileTxThread.start();
                 }
-                else {
-                    // "취소"를 눌렀을 때
-                    Log.d("TAG", "Bluetooth is not enabled");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } finally {
+                if (socket != null) {
+                    try {
+                        socket.close();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
-                break;
+            }
+        }
+
+    }
+
+    public class FileTxThread extends Thread {
+        Socket socket;
+
+        FileTxThread(Socket socket){
+            this.socket= socket;
+        }
+
+        @Override
+        public void run() {
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/"+Gloval.getB_name()+"/OEBPS/Images/"+imagename+".png");
+
+
+            if(os == null) return;
+            msg = "" + imagename; // 문자열 복사(?)
+
+            byte[] bytes = new byte[(int) file.length()];
+            BufferedInputStream bis, sendname;
+            try {
+
+                os.writeUTF(msg);
+                os.flush();
+
+
+
+
+
+                bis = new BufferedInputStream(new FileInputStream(file));
+                bis.read(bytes, 0, bytes.length);
+
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                oos.writeObject(bytes);
+                oos.flush();
+
+                socket.close();
+
+                final String sentMsg = "File sent to: " + socket.getInetAddress();
+                Main5Activity.this.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(Main5Activity.this, sentMsg, Toast.LENGTH_LONG).show();
+                    }});
+
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } finally {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
 
