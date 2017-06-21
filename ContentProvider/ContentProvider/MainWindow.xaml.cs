@@ -42,13 +42,6 @@ namespace ContentProvider
             
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
-
-            // url : http://susemi99.kr/1651
-            string searchName = "hello";
-            string searchURL = "https://apis.daum.net/search/image?apikey=a509068e1960142d8d73fa4240a49ae1&q=" + searchName + "&output=json";
-
-
-            //MessageBox.Show(searchURL);
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
@@ -64,6 +57,7 @@ namespace ContentProvider
                 count = 0;
                 contentData = epub.Content[count] as ContentData;
             }
+
             Run str = new Run(contentData.GetContentAsPlainText());
             paraBodyText.Inlines.Add(str);
         }
@@ -241,7 +235,7 @@ namespace ContentProvider
         private void menuUpload_Click(object sender, RoutedEventArgs e)
         {
             string uploadfile = null;
-
+            /*
             FileUploadSTFP(ref uploadfile);
 
             uploadfile = Path.GetFileName(uploadfile);
@@ -250,8 +244,10 @@ namespace ContentProvider
             var webBrowser = (IWebBrowserApp)ie;
             webBrowser.Visible = false;
             webBrowser.Navigate("http://computer.kevincrack.com/epub_upload.jsp?name=" + uploadfile);
+            */
+            
         }
-
+        /*
         public void FileUploadSTFP(ref string uploadfile)
         {
             const string host = ;
@@ -277,7 +273,7 @@ namespace ContentProvider
                     client.UploadFile(fileStream, Path.GetFileName(uploadfile));
                 }
             }
-        }
+        }*/
 
         private void menuDownload_Click(object sender, RoutedEventArgs e)
         {
