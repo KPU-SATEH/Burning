@@ -21,7 +21,7 @@ namespace ContentProvider
     {
         static int count = 0;
         Epub epub = null;
-        string fileFullName = null;
+        public string fileFullName = null;
         //string title;
         //string plainText;
         //string htmlText;
@@ -33,16 +33,7 @@ namespace ContentProvider
         private bool handle = true;
         string eraserToUse = null;
 
-        private void ScreenCapture(int intBitmapWidth, int intBitmapHeight, System.Drawing.Point ptSource, string location)
-        {
-            Bitmap bitmap = new Bitmap(intBitmapWidth, intBitmapHeight);
 
-            Graphics g = Graphics.FromImage(bitmap);
-
-            g.CopyFromScreen(ptSource, new System.Drawing.Point(0, 0), new System.Drawing.Size(intBitmapWidth, intBitmapHeight));
-
-            bitmap.Save(location, ImageFormat.Png);
-        }
 
         public MainWindow()
         {
@@ -176,34 +167,24 @@ namespace ContentProvider
                 epub = new Epub(fileFullName);
         }
 
+        private void deleteFile(string name)
+        {
+            File.Delete(name);
+        }
+
+        private void deleteDirectory(string name)
+        {
+            Directory.Delete(name, true);
+        }
+
+        public static string saveFileName = null;
+
         // file -> save shortcut(ctrl+s)
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            string saveFileName = ShowFileSaveDialog();
-
-            if (saveFileName != null)
-            {
-                string zipPath = fileFullName;
-                string extractPath = @"C:\Users\kevin\Documents\extract";
-                string startPath = @"C:\Users\kevin\Documents\extract";
-
-                try
-                {
-                    ZipFile.ExtractToDirectory(zipPath, extractPath);
-                    
-                    // 파일 경로 수정!
-                    ScreenCapture((int)myInkCanvas.ActualWidth, (int)myInkCanvas.ActualHeight,
-                        (new System.Drawing.Point((int)Application.Current.MainWindow.Left + (int)Width / 2,
-                        (int)Application.Current.MainWindow.Top + (int)button_back.ActualHeight * 5)),
-                        @"C:\Users\kevin\Documents\extract\추가ㅏㅏㅏㅏㅏ");
-
-                    ZipFile.CreateFromDirectory(startPath, saveFileName);
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-            }
+            inputImageName iIN = new inputImageName();
+            iIN.Owner = this;
+            iIN.Show();
         }
 
         // file -> save click
