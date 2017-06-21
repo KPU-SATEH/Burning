@@ -84,7 +84,7 @@
             <StackPanel x:Name="myStackPanel" Grid.Row="3" Grid.Column="10" Grid.ColumnSpan="10">
                 <InkCanvas x:Name="myInkCanvas" Height="{Binding ElementName=myStackPanel, Path=ActualHeight}">
                     <InkCanvas.Background>
-                        <ImageBrush x:Name="backImage" x:FieldModifier="public" />
+                        <ImageBrush x:Name="backImage" />
                     </InkCanvas.Background>
                 </InkCanvas>
             </StackPanel>
@@ -97,7 +97,7 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-            <UserControl x:Name="hello" x:FieldModifier="public"></UserControl>
+
             <Button x:Name="Choice" Content="Choice" Grid.Row="4" Grid.Column="19" Width="60" Click="btnChoice_Click" VerticalAlignment="Center"/>
         </Grid>
     </Grid>

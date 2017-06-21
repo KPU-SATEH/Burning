@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Windows;
 using System.Windows.Controls;
 using System.Drawing;
@@ -9,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using eBdb.EpubReader;
+using System.Drawing.Imaging;
 
 namespace ContentProvider
 {
@@ -31,6 +33,17 @@ namespace ContentProvider
         private bool handle = true;
         string eraserToUse = null;
 
+        private void ScreenCapture(int intBitmapWidth, int intBitmapHeight, System.Drawing.Point ptSource, string location)
+        {
+            Bitmap bitmap = new Bitmap(intBitmapWidth, intBitmapHeight);
+
+            Graphics g = Graphics.FromImage(bitmap);
+
+            g.CopyFromScreen(ptSource, new System.Drawing.Point(0, 0), new System.Drawing.Size(intBitmapWidth, intBitmapHeight));
+
+            bitmap.Save(location, ImageFormat.Png);
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -40,6 +53,8 @@ namespace ContentProvider
             
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
+
+            backImage = null;
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)
@@ -112,32 +127,14 @@ namespace ContentProvider
         public string ShowFileSaveDialog()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "e-book (*.bmp) | *.bmp";
+            saveFileDialog.Filter = "e-book (*.png) | *.png";
 
             if(saveFileDialog.ShowDialog() == true)
             {
-                //File.WriteAllBytes(saveFileDialog.FileName);
-                //MessageBox.Show(saveFileDialog.FileName);
                 return saveFileDialog.FileName;
             }
 
             return null;
-        }
-
-        public System.Drawing.Image ByteArrayToImage(byte[] b)
-        {
-            ImageConverter imgcvt = new ImageConverter();
-            System.Drawing.Image img = (System.Drawing.Image)imgcvt.ConvertFrom(b);
-
-            return img;
-        }
-
-        public byte[] ImageToByteArray(System.Drawing.Image img)
-        {
-            MemoryStream ms = new MemoryStream();
-            img.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-
-            return ms.ToArray();
         }
 
         private void NewCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -182,57 +179,48 @@ namespace ContentProvider
         // file -> save shortcut(ctrl+s)
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            System.Drawing.Image img;
             string saveFileName = ShowFileSaveDialog();
 
             if (saveFileName != null)
             {
-                img = ByteArrayToImage(CanvasToBitmapBytes());
-                img.Save(saveFileName, System.Drawing.Imaging.ImageFormat.Bmp);
-                img.Dispose();
+                string zipPath = fileFullName;
+                string extractPath = @"C:\Users\kevin\Documents\extract";
+                string startPath = @"C:\Users\kevin\Documents\extract";
+
+                try
+                {
+                    ZipFile.ExtractToDirectory(zipPath, extractPath);
+                    
+                    // 파일 경로 수정!
+                    ScreenCapture((int)myInkCanvas.ActualWidth, (int)myInkCanvas.ActualHeight,
+                        (new System.Drawing.Point((int)Application.Current.MainWindow.Left + (int)Width / 2,
+                        (int)Application.Current.MainWindow.Top + (int)button_back.ActualHeight * 5)),
+                        @"C:\Users\kevin\Documents\extract\추가ㅏㅏㅏㅏㅏ");
+
+                    ZipFile.CreateFromDirectory(startPath, saveFileName);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
             }
-        }
-
-        private byte[] CanvasToBitmapBytes()
-        {
-            int margin = (int)this.myInkCanvas.Margin.Left;
-            int width = (int)this.myInkCanvas.ActualWidth - margin;
-            int height = (int)this.myInkCanvas.ActualHeight - margin;
-            byte[] bitmapBytes;
-
-            RenderTargetBitmap rtb = new RenderTargetBitmap(width, height, 96d, 96d, PixelFormats.Default);
-            rtb.Render(myInkCanvas);
-
-            BmpBitmapEncoder encoder = new BmpBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(rtb));
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                encoder.Save(ms);
-                ms.Position = 0;
-                bitmapBytes = ms.ToArray();
-            }
-
-            return bitmapBytes;
         }
 
         // file -> save click
         private void menuSave_Click(object sender, RoutedEventArgs e)
         {
-            System.Drawing.Image img;
             string saveFileName = ShowFileSaveDialog();
 
             if (saveFileName != null)
             {
-                img = ByteArrayToImage(CanvasToBitmapBytes());
-                img.Save(saveFileName, System.Drawing.Imaging.ImageFormat.Bmp);
-                img.Dispose();
+
             }
         }
 
         private void menuUpload_Click(object sender, RoutedEventArgs e)
         {
             string uploadfile = null;
+
             /*
             FileUploadSTFP(ref uploadfile);
 
@@ -243,7 +231,7 @@ namespace ContentProvider
             webBrowser.Visible = false;
             webBrowser.Navigate("http://computer.kevincrack.com/epub_upload.jsp?name=" + uploadfile);
             */
-            
+
         }
         /*
         public void FileUploadSTFP(ref string uploadfile)
