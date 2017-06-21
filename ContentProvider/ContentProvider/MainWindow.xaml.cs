@@ -1,16 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.IO.Compression;
 using System.Windows;
 using System.Windows.Controls;
-using System.Drawing;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using eBdb.EpubReader;
-using System.Drawing.Imaging;
 
 namespace ContentProvider
 {
@@ -190,12 +185,9 @@ namespace ContentProvider
         // file -> save click
         private void menuSave_Click(object sender, RoutedEventArgs e)
         {
-            string saveFileName = ShowFileSaveDialog();
-
-            if (saveFileName != null)
-            {
-
-            }
+            inputImageName iIN = new inputImageName();
+            iIN.Owner = this;
+            iIN.Show();
         }
 
         private void menuUpload_Click(object sender, RoutedEventArgs e)
