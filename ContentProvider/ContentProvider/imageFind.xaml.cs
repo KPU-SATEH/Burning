@@ -49,6 +49,8 @@ namespace ContentProvider
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
+            Data.Clear();
+
             try
             {
                 JObject obj = JObject.Parse(Request_Json());

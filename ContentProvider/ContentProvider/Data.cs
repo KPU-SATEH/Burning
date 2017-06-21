@@ -29,5 +29,10 @@ namespace ContentProvider
         {
             return imgURL.Count;
         }
+
+        public static void Clear()
+        {
+            imgURL.Clear();
+        }
     }
 }
