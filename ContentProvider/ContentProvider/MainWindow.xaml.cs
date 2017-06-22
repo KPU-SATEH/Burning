@@ -28,8 +28,6 @@ namespace ContentProvider
         private bool handle = true;
         string eraserToUse = null;
 
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -39,8 +37,6 @@ namespace ContentProvider
             
             button_back.IsEnabled = false;
             button_front.IsEnabled = false;
-
-            backImage = null;
         }
 
         private void btnBackShowDlg_Click(object sender, RoutedEventArgs e)

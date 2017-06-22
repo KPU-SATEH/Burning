@@ -60,7 +60,16 @@ namespace ContentProvider
         {
             MainWindow mw = ((MainWindow)(Application.Current.MainWindow));
 
-            mw.backImage.ImageSource = new BitmapImage(new Uri(Data.Read(num)));
+            try
+            {
+                BitmapImage bi = new BitmapImage(new Uri(Data.Read(num)));
+
+                mw.backImage.ImageSource = bi;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ContentProvider"
+    
         mc:Ignorable="d"
         Title="MainWindow" Height="750" Width="1500" MinHeight="750" MinWidth="1500">
     <Window.CommandBindings>
@@ -84,7 +84,7 @@
             <StackPanel x:Name="myStackPanel" Grid.Row="3" Grid.Column="10" Grid.ColumnSpan="10">
                 <InkCanvas x:Name="myInkCanvas" Height="{Binding ElementName=myStackPanel, Path=ActualHeight}">
                     <InkCanvas.Background>
-                        <ImageBrush x:Name="backImage" />
+                        <ImageBrush x:Name="backImage" x:FieldModifier="public" />
                     </InkCanvas.Background>
                 </InkCanvas>
             </StackPanel>

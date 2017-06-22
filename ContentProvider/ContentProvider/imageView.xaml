@@ -78,7 +78,7 @@
         <Button x:Name="button_left" Grid.Row="1" Grid.Column="28" Content="&lt;" Click="buttonLeft_Click" />
         <Button x:Name="button_right" Grid.Row="1" Grid.Column="29" Content="&gt;" Click="buttonRight_Click" />
         <Button x:Name="myButton" Grid.ColumnSpan="28" Grid.Column="1" Grid.Row="3" Grid.RowSpan="26" Click="ImageButton_Click">
-            <Image x:Name="image" Width="{Binding ElementName=myButton, Path=ActualWidth}" />
+            <Image x:Name="image" Width="{Binding ElementName=myButton, Path=ActualWidth}"/>
         </Button>
     </Grid>
 </Window>
